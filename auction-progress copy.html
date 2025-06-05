@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Progress Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .lot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            max-width: 100%;
+            padding: 16px;
+        }
+
+        .lot-cell {
+            aspect-ratio: 1;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            min-height: 90px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: white;
+            border: 2px solid transparent;
+            overflow: hidden;
+        }
+
+        .lot-cell:hover {
+            transform: scale(1.05);
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .lot-cell.recent-bid {
+            animation: bidPulse 2s ease-out;
+            border-color: #ef4444;
+        }
+
+        .lot-cell.recent-extension {
+            border-color: #f59e0b;
+        }
+
+        @keyframes bidPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            10% { 
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .lot-number {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1f2937;
+        }
+
+        .lot-timer {
+            font-size: 13px;
+            margin: 4px 0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #f3f4f6;
+            color: #374151;
+            text-align: center;
+            line-height: 1.2;
+            min-width: 60px;
+        }
+
+        .lot-bid {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-top: 4px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #fef2f2;
+        }
+
+        /* Status colors */
+        .status-completed { 
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            opacity: 0.7;
+        }
+        .status-active { 
+            background-color: white;
+            border-color: #34d399;
+        }
+        .status-upcoming { 
+            background-color: white;
+            border-color: #e5e7eb;
+        }
+        .status-extended { 
+            background-color: white;
+            border-color: #fbbf24;
+        }
+        .status-watched { 
+            background-color: white;
+            border-color: #818cf8;
+        }
+
+        @keyframes pulseBorder {
+            0% { border-color: #34d399; }
+            50% { border-color: #10b981; }
+            100% { border-color: #34d399; }
+        }
+
+        .urgent-timer {
+            background: #fee2e2;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .section-header {
+            background: white;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+            font-size: 0.875rem;
+            color: #6b7280;
+            padding: 8px 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-item svg {
+            width: 18px;
+            height: 18px;
+            color: #9ca3af;
+        }
+
+        /* Mini-map adjustments */
+        .mini-map {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 240px;
+            height: 140px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .mini-map-grid {
+            display: grid;
+            grid-template-columns: repeat(40, 1fr);
+            gap: 1px;
+            height: 100%;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .mini-map-cell {
+            width: 100%;
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        /* Watchlist panel improvements */
+        .watchlist-panel {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 280px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        .watchlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            transition: all 0.2s ease;
+        }
+
+        .watchlist-item:hover {
+            background: #f3f4f6;
+        }
+
+        /* Zoom controls styling */
+        .zoom-controls {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .zoom-controls button {
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-controls button:hover {
+            background: #f3f4f6;
+        }
+
+        /* Activity Feed Panel */
+        .activity-feed {
+            display: none;
+        }
+
+        .activity-feed-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-feed-title {
+            font-weight: 600;
+            color: #111827;
+            font-size: 1.1rem;
+        }
+
+        .activity-feed-content {
+            padding: 8px;
+            overflow-y: auto;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column-reverse; /* Show newest first */
+        }
+
+        .activity-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 4px 0;
+            background: #f9fafb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .activity-item.new {
+            background: #f0fdf4;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .activity-lot {
+            font-weight: 600;
+            color: #111827;
+            min-width: 60px;
+        }
+
+        .activity-details {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-bid {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .activity-extension {
+            font-size: 0.85rem;
+            color: #f59e0b;
+            font-weight: 500;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Auction Progress Overview</h1>
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 status-completed rounded"></div>
+                    <span class="text-sm">Completed</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 status-active rounded"></div>
+                    <span class="text-sm">Active</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 status-upcoming rounded border border-gray-200"></div>
+                    <span class="text-sm">Upcoming</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 status-extended rounded"></div>
+                    <span class="text-sm">Time Extended</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 status-watched rounded"></div>
+                    <span class="text-sm">In Watchlist</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="mb-6 flex gap-4 flex-wrap">
+            <div class="flex items-center gap-2">
+                <label class="text-sm font-medium">Quick Jump:</label>
+                <select class="text-sm border rounded px-2 py-1" id="quickJump">
+                    <option value="">Select Range</option>
+                    <option value="1-100">Lots 1-100</option>
+                    <option value="101-200">Lots 101-200</option>
+                    <option value="201-300">Lots 201-300</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <label class="text-sm font-medium">Filter:</label>
+                <select class="text-sm border rounded px-2 py-1" id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active Only</option>
+                    <option value="extended">Extended Only</option>
+                    <option value="upcoming">Upcoming Only</option>
+                    <option value="watched">Watchlist Only</option>
+                </select>
+            </div>
+            <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" id="centerActive">
+                Center on Active Lots
+            </button>
+            <button class="bg-indigo-500 text-white px-3 py-1 rounded text-sm hover:bg-indigo-600" id="toggleWatchlist">
+                Show Watchlist
+            </button>
+        </div>
+
+        <!-- Time-based Sections -->
+        <div class="sections-container space-y-6">
+            <!-- Closing Soon Section (10 mins) -->
+            <div class="section-header">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-red-600">Closing in 10 Minutes</h2>
+                    <div class="section-stats">
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span id="closing-soon-count">0 Lots</span>
+                        </div>
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span id="closing-soon-active">0 Active</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lot-grid" id="closing-soon-grid"></div>
+            </div>
+
+            <!-- Closing in Hour Section -->
+            <div class="section-header">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-orange-600">Closing in 1 Hour</h2>
+                    <div class="section-stats">
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span id="closing-hour-count">0 Lots</span>
+                        </div>
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span id="closing-hour-active">0 Active</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lot-grid" id="closing-hour-grid"></div>
+            </div>
+
+            <!-- Coming Soon Section -->
+            <div class="section-header">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-blue-600">Coming Soon</h2>
+                    <div class="section-stats">
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span id="coming-soon-count">0 Lots</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lot-grid" id="coming-soon-grid"></div>
+            </div>
+
+            <!-- Closed/Sold Section -->
+            <div class="section-header">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-600">Closed/Sold</h2>
+                    <div class="section-stats">
+                        <div class="stat-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span id="closed-count">0 Lots</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lot-grid" id="closed-grid"></div>
+            </div>
+        </div>
+
+        <!-- Watchlist Panel -->
+        <div class="watchlist-panel hidden" id="watchlistPanel">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-gray-800">My Watchlist</h3>
+                <span class="text-sm text-gray-500" id="watchlistCount">0 lots</span>
+            </div>
+            <div id="watchlistItems">
+                <!-- Watchlist items will be generated here -->
+            </div>
+        </div>
+
+        <!-- Mini-map -->
+        <div class="mini-map">
+            <div class="mini-map-grid" id="miniMap">
+                <!-- Mini-map cells will be generated here -->
+            </div>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls flex gap-2 p-2">
+            <button class="bg-white border rounded p-2 hover:bg-gray-50" id="zoomIn">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+            </button>
+            <button class="bg-white border rounded p-2 hover:bg-gray-50" id="zoomOut">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Add Activity Feed Panel -->
+        <div class="activity-feed">
+            <div class="activity-feed-header">
+                <span class="activity-feed-title">Live Activity</span>
+                <span class="text-sm text-gray-500" id="active-lots-count">0 active lots</span>
+            </div>
+            <div class="activity-feed-content" id="activityFeed">
+                <!-- Activity items will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the grid
+        const miniMap = document.getElementById('miniMap');
+        const totalLots = 1000;
+        const watchlistPanel = document.getElementById('watchlistPanel');
+        const watchlistItems = document.getElementById('watchlistItems');
+        const watchlistCount = document.getElementById('watchlistCount');
+        let watchedLots = new Set();
+
+        // Initialize section grids
+        const closingSoonGrid = document.getElementById('closing-soon-grid');
+        const closingHourGrid = document.getElementById('closing-hour-grid');
+        const comingSoonGrid = document.getElementById('coming-soon-grid');
+        const closedGrid = document.getElementById('closed-grid');
+
+        // Initialize counters
+        const closingSoonCount = document.getElementById('closing-soon-count');
+        const closingHourCount = document.getElementById('closing-hour-count');
+        const comingSoonCount = document.getElementById('coming-soon-count');
+        const closedCount = document.getElementById('closed-count');
+        const closingSoonActive = document.getElementById('closing-soon-active');
+        const closingHourActive = document.getElementById('closing-hour-active');
+
+        // Lot timing data
+        const lotTimings = new Map();
+
+        // Bid tracking
+        const lotBids = new Map(); // Store bid counts for each lot
+
+        // Add to existing variables
+        const activityFeed = document.getElementById('activityFeed');
+        const activeLotCount = document.getElementById('active-lots-count');
+        const MAX_ACTIVITY_ITEMS = 50;
+
+        // Make toggleWatchLot globally available
+        window.toggleWatchLot = function(lotNumber) {
+            if (watchedLots.has(lotNumber)) {
+                watchedLots.delete(lotNumber);
+                updateLotStatus(lotNumber, getLotBaseStatus(lotNumber));
+            } else {
+                watchedLots.add(lotNumber);
+                updateLotStatus(lotNumber, 'watched');
+            }
+            updateWatchlistPanel();
+        };
+
+        function createLotCell(lotNumber) {
+            const cell = document.createElement('div');
+            cell.className = 'lot-cell flex items-center justify-center border status-upcoming';
+            cell.setAttribute('data-lot', lotNumber);
+            
+            const lotNumber_el = document.createElement('div');
+            lotNumber_el.className = 'lot-number';
+            lotNumber_el.textContent = `#${lotNumber}`;
+            
+            const timer = document.createElement('div');
+            timer.className = 'lot-timer';
+            timer.id = `timer-${lotNumber}`;
+
+            const bid = document.createElement('div');
+            bid.className = 'lot-bid hidden';
+            bid.id = `bid-${lotNumber}`;
+            
+            cell.appendChild(lotNumber_el);
+            cell.appendChild(timer);
+            cell.appendChild(bid);
+            
+            cell.addEventListener('click', () => toggleWatchLot(lotNumber));
+            
+            return cell;
+        }
+
+        function getLotBaseStatus(lotNumber) {
+            if (lotNumber <= 150) return 'completed';
+            if (lotNumber >= 151 && lotNumber <= 155) return 'active';
+            return 'upcoming';
+        }
+
+        function updateLotStatus(lotNumber, status) {
+            const lotCell = document.querySelector(`.lot-cell[data-lot="${lotNumber}"]`);
+            const miniCell = document.querySelector(`.mini-map-cell[data-lot="${lotNumber}"]`);
+            const previousStatus = lotCell ? Array.from(lotCell.classList).find(c => c.startsWith('status-')) : null;
+            
+            if (lotCell && miniCell) {
+                // Remove all status classes
+                lotCell.classList.remove('status-completed', 'status-active', 'status-upcoming', 'status-extended', 'status-watched');
+                miniCell.classList.remove('status-completed', 'status-active', 'status-upcoming', 'status-extended', 'status-watched');
+                
+                // Add new status
+                if (status === 'extended' && lotCell.classList.contains('status-active')) {
+                    lotCell.classList.add('extended');
+                    miniCell.classList.add('extended');
+                } else if (watchedLots.has(lotNumber)) {
+                    lotCell.classList.add('status-watched');
+                    miniCell.classList.add('status-watched');
+                    if (status === 'active') {
+                        lotCell.classList.add('status-active');
+                        miniCell.classList.add('status-active');
+                    }
+                } else {
+                    lotCell.classList.add(`status-${status}`);
+                    miniCell.classList.add(`status-${status}`);
+                }
+
+                // Show status change notification if it's a meaningful change
+                const newStatus = status === 'extended' ? 'extended' : 
+                                status === 'completed' ? 'closed' : null;
+                
+                if (previousStatus && previousStatus !== `status-${status}` && newStatus) {
+                    const statusMessages = {
+                        'extended': 'Time Extended',
+                        'closed': 'Lot Closed'
+                    };
+                    
+                    showNotification(lotNumber, statusMessages[newStatus]);
+                }
+            }
+        }
+
+        function showNotification(lotNumber, message) {
+            const lotCell = document.querySelector(`.lot-cell[data-lot="${lotNumber}"]`);
+            if (!lotCell) return;
+
+            // Remove any existing notification
+            const existingNotification = lotCell.querySelector('.lot-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = 'lot-notification';
+            notification.innerHTML = message;
+            lotCell.appendChild(notification);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                notification.classList.add('show');
+            });
+
+            // Remove notification after animation
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function simulateBid(lotNumber) {
+            const lotCell = document.querySelector(`.lot-cell[data-lot="${lotNumber}"]`);
+            const currentEndTime = lotTimings.get(lotNumber);
+            const now = new Date();
+            
+            if (lotCell && currentEndTime > now) {
+                // Generate random bid amount between $100 and $10000
+                const bidAmount = Math.floor(Math.random() * 9900) + 100;
+                
+                // Update bid display
+                const bidEl = document.getElementById(`bid-${lotNumber}`);
+                if (bidEl) {
+                    bidEl.textContent = `$${bidAmount.toLocaleString()}`;
+                    bidEl.classList.remove('hidden');
+                }
+                
+                // Visual feedback for new bid
+                lotCell.classList.remove('recent-bid', 'recent-extension');
+                void lotCell.offsetWidth; // Force reflow
+                lotCell.classList.add('recent-bid');
+                
+                // Check if time extension is needed
+                const timeRemaining = currentEndTime - now;
+                const needsExtension = timeRemaining < 120000; // Less than 2 minutes
+                
+                // Apply extension if needed
+                if (needsExtension) {
+                    const newEndTime = new Date(now.getTime() + 120000); // 2 minutes from now
+                    lotTimings.set(lotNumber, newEndTime);
+                    lotCell.classList.add('recent-extension');
+                }
+                
+                // Update watchlist if the lot is being watched
+                if (watchedLots.has(lotNumber)) {
+                    updateWatchlistPanel();
+                }
+
+                // Remove visual feedback after animation
+                setTimeout(() => {
+                    lotCell.classList.remove('recent-bid', 'recent-extension');
+                }, 2000);
+            }
+        }
+
+        function simulateRandomBids() {
+            // Get all active lots (those closing within 10 minutes)
+            const activeLots = Array.from(closingSoonGrid.children).map(
+                cell => parseInt(cell.getAttribute('data-lot'))
+            );
+
+            if (activeLots.length > 0) {
+                // Randomly select 1-2 lots to receive bids
+                const numLotsToReceiveBids = Math.floor(Math.random() * 2) + 1;
+                
+                for (let i = 0; i < numLotsToReceiveBids; i++) {
+                    if (activeLots.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * activeLots.length);
+                        const lotNumber = activeLots[randomIndex];
+                        
+                        // Simulate bid
+                        simulateBid(lotNumber);
+                        
+                        // Remove this lot from consideration for other bids in this round
+                        activeLots.splice(randomIndex, 1);
+                    }
+                }
+            }
+        }
+
+        function updateWatchlistPanel() {
+            watchlistCount.textContent = `${watchedLots.size} lots`;
+            watchlistItems.innerHTML = '';
+            
+            watchedLots.forEach(lotNumber => {
+                const item = document.createElement('div');
+                item.className = 'watchlist-item';
+                const endTime = lotTimings.get(lotNumber);
+                const timeDiff = endTime - new Date();
+                let status = getLotBaseStatus(lotNumber);
+                let timeStr = '';
+
+                if (timeDiff > 0) {
+                    const minutes = Math.floor(timeDiff / 60000);
+                    const seconds = Math.floor((timeDiff % 60000) / 1000);
+                    timeStr = minutes > 0 ? `${minutes}m` : `${seconds}s`;
+                } else {
+                    timeStr = 'CLOSED';
+                }
+
+                item.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium">Lot ${lotNumber}</span>
+                            <span class="text-sm px-2 py-0.5 rounded ${
+                                status === 'completed' ? 'bg-gray-100 text-gray-600' :
+                                status === 'active' ? 'bg-green-100 text-green-700' :
+                                'bg-blue-100 text-blue-700'
+                            }">${status}</span>
+                        </div>
+                        <div class="text-sm text-gray-500 mt-1">
+                            ${timeStr}
+                        </div>
+                    </div>
+                    <button class="text-red-500 hover:text-red-600" onclick="toggleWatchLot(${lotNumber})">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+                watchlistItems.appendChild(item);
+            });
+        }
+
+        function getRandomEndTime(lotNumber) {
+            const now = new Date();
+            if (lotNumber <= 150) {
+                // Closed lots - stagger their closing times in the past
+                return new Date(now - (lotNumber * 20000)); // 20 second gaps in the past
+            } else if (lotNumber <= 300) {
+                // Active and closing soon lots - stagger their end times
+                const baseEndTime = now.getTime() + ((lotNumber - 150) * 20000); // 20 second gaps
+                return new Date(baseEndTime);
+            } else if (lotNumber <= 500) {
+                // Closing within hour - start after the closing soon lots
+                const baseEndTime = now.getTime() + ((lotNumber - 150) * 20000);
+                return new Date(baseEndTime);
+            } else {
+                // Coming soon - start after the closing hour lots
+                const baseEndTime = now.getTime() + ((lotNumber - 150) * 20000);
+                return new Date(baseEndTime);
+            }
+        }
+
+        function initializeLots() {
+            let closingSoonCount = 0;
+            let closingHourCount = 0;
+            let comingSoonCount = 0;
+            let closedCount = 0;
+
+            for (let i = 1; i <= totalLots; i++) {
+                const endTime = getRandomEndTime(i);
+                lotTimings.set(i, endTime);
+                const cell = createLotCell(i);
+                
+                const timeDiff = endTime - new Date();
+                
+                if (timeDiff < 0) {
+                    closedGrid.appendChild(cell);
+                    closedCount++;
+                } else if (timeDiff <= 600000) { // 10 minutes
+                    closingSoonGrid.appendChild(cell);
+                    closingSoonCount++;
+                } else if (timeDiff <= 3600000) { // 1 hour
+                    closingHourGrid.appendChild(cell);
+                    closingHourCount++;
+                } else {
+                    comingSoonGrid.appendChild(cell);
+                    comingSoonCount++;
+                }
+
+                // Create mini-map cell
+                const miniCell = document.createElement('div');
+                miniCell.className = 'mini-map-cell status-upcoming';
+                miniCell.setAttribute('data-lot', i);
+                miniMap.appendChild(miniCell);
+            }
+
+            // Update section counts
+            document.getElementById('closing-soon-count').textContent = `${closingSoonCount} Lots`;
+            document.getElementById('closing-hour-count').textContent = `${closingHourCount} Lots`;
+            document.getElementById('coming-soon-count').textContent = `${comingSoonCount} Lots`;
+            document.getElementById('closed-count').textContent = `${closedCount} Lots`;
+        }
+
+        function sortClosingSoonSection() {
+            const closingSoonLots = Array.from(closingSoonGrid.children);
+            closingSoonLots.sort((a, b) => {
+                const aTime = lotTimings.get(parseInt(a.getAttribute('data-lot')));
+                const bTime = lotTimings.get(parseInt(b.getAttribute('data-lot')));
+                return aTime - bTime;
+            });
+            
+            closingSoonLots.forEach(lot => closingSoonGrid.appendChild(lot));
+        }
+
+        function extendLotTime(lotNumber, extensionMinutes) {
+            const currentEndTime = lotTimings.get(lotNumber);
+            const newEndTime = new Date(currentEndTime.getTime() + (extensionMinutes * 60000));
+            lotTimings.set(lotNumber, newEndTime);
+            
+            // Get the lot element
+            const lotCell = document.querySelector(`.lot-cell[data-lot="${lotNumber}"]`);
+            if (!lotCell) return;
+
+            // Determine new section based on new end time
+            const timeDiff = newEndTime - new Date();
+            let targetGrid;
+            
+            if (timeDiff <= 600000) { // 10 minutes
+                targetGrid = closingSoonGrid;
+            } else if (timeDiff <= 3600000) { // 1 hour
+                targetGrid = closingHourGrid;
+            } else {
+                targetGrid = comingSoonGrid;
+            }
+
+            // Move lot to new section if needed
+            if (lotCell.parentElement !== targetGrid) {
+                targetGrid.appendChild(lotCell);
+                updateSectionCounts();
+            }
+
+            // If still in closing soon section, resort
+            if (targetGrid === closingSoonGrid) {
+                sortClosingSoonSection();
+            }
+
+            // Visual feedback for extension
+            lotCell.classList.add('just-extended');
+            setTimeout(() => lotCell.classList.remove('just-extended'), 1000);
+        }
+
+        function simulateRandomExtensions() {
+            const closingSoonLots = Array.from(closingSoonGrid.children).map(
+                cell => parseInt(cell.getAttribute('data-lot'))
+            );
+
+            if (closingSoonLots.length > 0) {
+                // Randomly select 1-3 lots to extend
+                const numLotsToExtend = Math.floor(Math.random() * 3) + 1;
+                for (let i = 0; i < numLotsToExtend; i++) {
+                    if (closingSoonLots.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * closingSoonLots.length);
+                        const lotNumber = closingSoonLots[randomIndex];
+                        
+                        // Extend by 2 minutes
+                        extendLotTime(lotNumber, 2);
+                        
+                        // Remove this lot from consideration for other extensions in this round
+                        closingSoonLots.splice(randomIndex, 1);
+                    }
+                }
+            }
+        }
+
+        function updateSectionCounts() {
+            let closingSoonCount = closingSoonGrid.children.length;
+            let closingHourCount = closingHourGrid.children.length;
+            let comingSoonCount = comingSoonGrid.children.length;
+            let closedCount = closedGrid.children.length;
+
+            document.getElementById('closing-soon-count').textContent = `${closingSoonCount} Lots`;
+            document.getElementById('closing-hour-count').textContent = `${closingHourCount} Lots`;
+            document.getElementById('coming-soon-count').textContent = `${comingSoonCount} Lots`;
+            document.getElementById('closed-count').textContent = `${closedCount} Lots`;
+        }
+
+        function updateTimers() {
+            const now = new Date();
+            let closingSoonActive = 0;
+            let closingHourActive = 0;
+            let needsResorting = false;
+
+            lotTimings.forEach((endTime, lotNumber) => {
+                const timer = document.getElementById(`timer-${lotNumber}`);
+                if (!timer) return;
+
+                const timeDiff = endTime - now;
+                
+                if (timeDiff < 0) {
+                    timer.textContent = 'CLOSED';
+                    timer.className = 'lot-timer text-gray-500';
+                    updateLotStatus(lotNumber, 'completed');
+                    
+                    // Move to closed section if not already there
+                    const lotCell = timer.parentElement;
+                    if (lotCell.parentElement !== closedGrid) {
+                        closedGrid.appendChild(lotCell);
+                        needsResorting = true;
+                    }
+                } else {
+                    const minutes = Math.floor(timeDiff / 60000);
+                    const seconds = Math.floor((timeDiff % 60000) / 1000);
+
+                    // Show minutes only if more than 2 minutes
+                    if (minutes > 2) {
+                        timer.textContent = `${minutes}m`;
+                    } else {
+                        // Show precise countdown when under 2 minutes
+                        timer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+
+                    // Update timer styling based on time remaining
+                    if (timeDiff < 30000) { // Less than 30 seconds
+                        timer.className = 'lot-timer urgent-timer';
+                    } else if (timeDiff < 120000) { // Less than 2 minutes
+                        timer.className = 'lot-timer text-orange-600 font-bold';
+                    }
+
+                    // Count active lots
+                    if (timeDiff <= 600000) closingSoonActive++;
+                    if (timeDiff <= 3600000) closingHourActive++;
+
+                    // Move lots between sections if needed
+                    const lotCell = timer.parentElement;
+                    let targetGrid;
+                    
+                    if (timeDiff <= 600000) {
+                        targetGrid = closingSoonGrid;
+                        updateLotStatus(lotNumber, 'active');
+                    } else if (timeDiff <= 3600000) {
+                        targetGrid = closingHourGrid;
+                        updateLotStatus(lotNumber, 'upcoming');
+                    } else {
+                        targetGrid = comingSoonGrid;
+                        updateLotStatus(lotNumber, 'upcoming');
+                    }
+
+                    if (lotCell.parentElement !== targetGrid) {
+                        targetGrid.appendChild(lotCell);
+                        needsResorting = true;
+                    }
+                }
+            });
+
+            // Sort closing soon section if needed
+            if (needsResorting) {
+                sortClosingSoonSection();
+                updateSectionCounts();
+            }
+
+            // Update active counts
+            document.getElementById('closing-soon-active').textContent = `${closingSoonActive} Active`;
+            document.getElementById('closing-hour-active').textContent = `${closingHourActive} Active`;
+        }
+
+        // Add styles for extension animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes extensionPulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); background-color: #fef3c7; }
+                100% { transform: scale(1); }
+            }
+            .just-extended {
+                animation: extensionPulse 1s ease-in-out;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the visualization
+        initializeLots();
+        sortClosingSoonSection();
+        addInitialWatchedLots();
+
+        // Update timers every second
+        setInterval(updateTimers, 1000);
+
+        // Simulate random extensions every 15-30 seconds
+        setInterval(() => {
+            simulateRandomExtensions();
+        }, Math.random() * 15000 + 15000);
+
+        // Simulate random bids less frequently to make it easier to follow
+        setInterval(() => {
+            simulateRandomBids();
+        }, 3000); // Every 3 seconds
+
+        // Toggle watchlist panel visibility
+        document.getElementById('toggleWatchlist').addEventListener('click', () => {
+            watchlistPanel.classList.toggle('hidden');
+        });
+
+        // Quick jump functionality
+        document.getElementById('quickJump').addEventListener('change', (e) => {
+            const [start, end] = e.target.value.split('-').map(Number);
+            if (start && end) {
+                const targetLot = document.querySelector(`.lot-cell[data-lot="${start}"]`);
+                if (targetLot) {
+                    targetLot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Filter functionality
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            const status = e.target.value;
+            const lots = document.querySelectorAll('.lot-cell');
+            
+            lots.forEach(lot => {
+                if (status === 'all' || lot.classList.contains(`status-${status}`)) {
+                    lot.style.display = 'flex';
+                } else {
+                    lot.style.display = 'none';
+                }
+            });
+        });
+
+        // Center on active lots
+        document.getElementById('centerActive').addEventListener('click', () => {
+            const activeLot = document.querySelector('.lot-cell.status-active');
+            if (activeLot) {
+                activeLot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        // Add some initial watched lots
+        function addInitialWatchedLots() {
+            // Add a mix of lots from different sections
+            const initialWatched = [
+                155,  // From closing soon section
+                180,  // From closing soon section
+                320,  // From closing in hour section
+                450,  // From closing in hour section
+                600,  // From coming soon section
+                700   // From coming soon section
+            ];
+
+            initialWatched.forEach(lotNumber => {
+                watchedLots.add(lotNumber);
+            });
+            updateWatchlistPanel();
+        }
+
+        function updateActiveLotCount() {
+            const activeLots = document.querySelectorAll('.status-active').length;
+            activeLotCount.textContent = `${activeLots} active lots`;
+        }
+
+        function addActivityItem(lotNumber, bidAmount, extended = false) {
+            const item = document.createElement('div');
+            item.className = 'activity-item new';
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            item.innerHTML = `
+                <span class="activity-lot">Lot ${lotNumber}</span>
+                <div class="activity-details">
+                    <div>
+                        <span class="activity-bid">$${bidAmount.toLocaleString()}</span>
+                        ${extended ? '<span class="activity-extension ml-2">+2m</span>' : ''}
+                    </div>
+                    <span class="activity-time">${timeStr}</span>
+                </div>
+            `;
+            
+            activityFeed.insertBefore(item, activityFeed.firstChild);
+            
+            // Remove new highlight after 2 seconds
+            setTimeout(() => {
+                item.classList.remove('new');
+            }, 2000);
+
+            // Limit the number of items
+            while (activityFeed.children.length > MAX_ACTIVITY_ITEMS) {
+                activityFeed.removeChild(activityFeed.lastChild);
+            }
+        }
+    </script>
+</body>
+</html> 

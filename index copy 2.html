@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RBAuction - Closing Now</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Entry Flow Overlay (hidden by default) -->
+  <div id="welcomeModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg w-11/12 max-w-md p-6 flex flex-col items-center">
+      <img src="https://placehold.co/80x40?text=Ritchie Bros Auctions" alt="RBA Logo" class="mb-3">
+      <h2 class="text-xl font-semibold mb-2 text-center">Welcome to Closing Now</h2>
+      <p class="text-sm text-gray-600 mb-4 text-center">
+        Live, real-time bidding on lots closing soon.<br>
+        Place quick bids, track favorites, and compete in the final minutes!
+      </p>
+      <button onclick="enterLiveAuction()" class="w-full py-2 bg-orange-500 text-white rounded font-semibold hover:bg-orange-600 transition">Enter Live Auction</button>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <header class="bg-white shadow sticky top-0 z-40">
+    <!-- Primary Header -->
+    <div class="border-b border-gray-100">
+      <div class="max-w-5xl mx-auto flex items-center justify-between px-4 py-2">
+        <h1 class="text-lg font-semibold">2024 Summer Equipment Auction</h1>
+        <div class="flex items-center gap-4">
+          <div class="online-bidders">
+            <div class="online-pulse"></div>
+            <span class="text-sm bidder-count">12,847 online bidders</span>
+          </div>
+          
+          <!-- User Avatar Dropdown -->
+          <div class="relative">
+            <div class="user-avatar w-8 h-8 text-sm cursor-pointer hover:ring-2 hover:ring-orange-500 hover:ring-offset-2 transition-all duration-200" onclick="toggleUserDropdown(event)">
+              <span>MR</span>
+            </div>
+            
+            <!-- Dropdown Panel -->
+            <div class="user-dropdown absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-lg hidden">
+              <!-- User Info Section -->
+              <div class="p-4 border-b">
+                <div class="flex items-center gap-3">
+                  <div class="user-avatar w-10 h-10">
+                    <span>MR</span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Maunish Raythatha</div>
+                    <div class="text-sm text-gray-500">Premium Bidder</div>
+                  </div>
+                  <div class="approval-badge approved text-xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Approved</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Bid Limits Section -->
+              <div class="p-4">
+                <div class="space-y-4">
+                  <!-- Total Bid Limit -->
+                  <div class="bid-limit-item">
+                    <div class="flex justify-between items-baseline mb-1">
+                      <div class="text-sm text-gray-500">Total Bid Limit</div>
+                      <div class="text-sm">
+                        <span class="font-semibold text-orange-600">$750,000</span>
+                        <span class="text-gray-400">/</span>
+                        <span class="text-gray-600">$1,000,000</span>
+                      </div>
+                    </div>
+                    <div class="bid-limit-bar">
+                      <div class="bid-limit-progress warning" style="width: 75%"></div>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">$250,000 available</div>
+                  </div>
+                  
+                  <!-- Active Bids -->
+                  <div class="bid-limit-item">
+                    <div class="flex justify-between items-baseline mb-1">
+                      <div class="text-sm text-gray-500">Active Bids</div>
+                      <div class="text-sm">
+                        <span class="font-semibold text-orange-600">12</span>
+                        <span class="text-gray-400">/</span>
+                        <span class="text-gray-600">40</span>
+                      </div>
+                    </div>
+                    <div class="bid-limit-bar">
+                      <div class="bid-limit-progress" style="width: 30%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="p-4 bg-gray-50 rounded-b-lg border-t">
+                <div class="space-y-2">
+                  <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>My Watchlist</span>
+                  </button>
+                  <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Bid History</span>
+                  </button>
+                  <button class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Settings</span>
+                  </button>
+                  <button class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary Header - Event Details -->
+    <div class="bg-gray-50">
+      <div class="max-w-5xl mx-auto px-4 py-2">
+        <div class="flex flex-wrap items-center gap-4 text-xs">
+          <!-- Time and Event Info -->
+          <div class="flex items-center gap-3 pr-4 border-r border-gray-200">
+            <div class="flex items-center gap-2 text-gray-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Pacific (UTC-8)</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="font-medium">2 Day Event</span>
+            </div>
+          </div>
+
+          <!-- Location with Map Badge -->
+          <div class="flex items-center gap-2 pr-4 border-r border-gray-200">
+            <div class="flex items-center gap-1 px-2 py-1 bg-white rounded-full shadow-sm border border-gray-100">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="text-gray-600">Phoenix, AZ</span>
+              <span class="text-xs text-blue-600 underline cursor-pointer">View Map</span>
+            </div>
+            <div class="flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="font-medium">Inspection Available</span>
+            </div>
+          </div>
+
+          <!-- Event Days as Pills -->
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 px-2 py-1 bg-orange-50 text-orange-700 rounded-full border border-orange-100">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="font-medium">Day 1:</span>
+              <span>Lots 1-400</span>
+              <span class="px-1.5 py-0.5 bg-orange-100 rounded text-xs">Agriculture</span>
+            </div>
+            <div class="flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="font-medium">Day 2:</span>
+              <span>Lots 401-800</span>
+              <span class="px-1.5 py-0.5 bg-blue-100 rounded text-xs">Construction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="max-w-5xl mx-auto px-4">
+    <!-- Analytics Overview -->
+    <div class="bg-white shadow-sm mt-2 mb-4">
+      <div class="py-3 px-4 -mx-4">
+        <!-- Summary Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <!-- Total Lots -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Total Lots</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold analytics-value" data-stat="total-lots">1,200</span>
+              <span class="text-xs text-gray-500">items</span>
+            </div>
+          </div>
+          
+          <!-- Lots Sold -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Lots Sold</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold text-green-600 analytics-value" data-stat="lots-sold">847</span>
+              <span class="text-xs text-gray-500">items</span>
+            </div>
+          </div>
+
+          <!-- Total Value -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Total Value</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold analytics-value" data-stat="total-value">$24.5M</span>
+            </div>
+          </div>
+
+          <!-- Your Wins -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Your Wins</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold text-orange-600 analytics-value" data-stat="your-wins">12</span>
+              <span class="text-xs text-gray-500">lots</span>
+            </div>
+          </div>
+
+          <!-- Value Won -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Value Won</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold text-orange-600 analytics-value" data-stat="value-won">$890K</span>
+            </div>
+          </div>
+
+          <!-- Pending Lots -->
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-500">Pending Lots</span>
+            <div class="flex items-baseline gap-1">
+              <span class="text-xl font-bold text-blue-600 analytics-value" data-stat="pending-lots">353</span>
+              <span class="text-xs text-gray-500">items</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-4 relative bg-gray-50 p-4 rounded-lg border border-gray-100">
+          <div class="mb-2">
+            <span class="text-sm font-medium text-gray-700">Sale Progress</span>
+          </div>
+          <div class="bg-gray-200 rounded-full h-2 progress-bar-container overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full progress-bar transition-all duration-1000 ease-out" style="width: 70.6%">
+              <div class="progress-pulse absolute inset-0 opacity-50"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grouped Closing Items Navigation -->
+    <nav class="flex overflow-x-auto gap-2 py-2 mb-2 -mx-4 px-4">
+      <div class="flex gap-2 items-center">
+        <!-- Primary Actions -->
+        <div class="flex gap-2 border-r border-gray-200 pr-2">
+          <button class="px-3 py-1 bg-orange-100 text-orange-700 rounded font-semibold border border-orange-400 whitespace-nowrap">
+            Closing Now
+          </button>
+          <button class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded flex items-center gap-1 whitespace-nowrap border border-indigo-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Watchlist
+            <span class="bg-indigo-200 text-indigo-800 text-xs px-1.5 rounded-full">8</span>
+          </button>
+          <button class="px-3 py-1 bg-blue-100 text-blue-700 rounded flex items-center gap-1 whitespace-nowrap border border-blue-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M15 10L9 14M9 10l6 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="9" stroke-width="2"/>
+            </svg>
+            My Bids
+            <span class="bg-blue-200 text-blue-800 text-xs px-1.5 rounded-full">5</span>
+          </button>
+          <button class="px-3 py-1 bg-orange-100 text-orange-700 rounded flex items-center gap-1 whitespace-nowrap border border-orange-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M12 8l3 4h2l2 2H5l2-2h2l3-4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Won Items
+            <span class="bg-orange-200 text-orange-800 text-xs px-1.5 rounded-full">12</span>
+          </button>
+        </div>
+
+        <!-- Secondary Actions -->
+        <div class="flex gap-2">
+          <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded flex items-center gap-1 whitespace-nowrap border border-gray-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            View All Items
+          </button>
+          <button class="px-3 py-1 bg-gray-100 text-gray-700 rounded flex items-center gap-1 whitespace-nowrap border border-gray-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Sold Items
+            <span class="bg-gray-200 text-gray-800 text-xs px-1.5 rounded-full">847</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Active Lots Container -->
+    <div class="lots-container relative min-h-[200px] mb-8">
+      <!-- Lot Card 1: Winning, Active -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-green-500 relative lot-card" style="transform: translateY(0px)">
+        <div class="bid-status">
+          <span class="bg-green-200 text-green-700 text-xs px-2 py-0.5 rounded">Winning</span>
+        </div>
+        
+        <img src="https://placehold.co/80x60?text=Lot" alt="2019 Cat D6T Dozer" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2019 Cat D6T Dozer</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #123 • 12 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">48 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-green-600">$120,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$3,785</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-red-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm text-red-600">01:28</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $2,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lot Card 2: Outbid -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-red-500 relative lot-card outbid-alert" style="transform: translateY(128px)">
+        <div class="bid-status">
+          <span class="animate-pulse bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded">Outbid</span>
+        </div>
+        <img src="https://placehold.co/80x60?text=Lot" alt="2020 Komatsu PC360LC-11 Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2020 Komatsu PC360LC-11 Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #124 • 8 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">36 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-red-600">$175,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$5,520</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-red-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm text-red-600">02:15</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $5,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add remaining lot cards -->
+      <!-- Lot Card 6 -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card" style="transform: translateY(640px)">
+        <img src="https://placehold.co/80x60?text=Lot" alt="2019 Link-Belt 350 X4 Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2019 Link-Belt 350 X4 Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #128 • 4 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">27 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-gray-700">$152,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$4,795</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm">06:00</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $3,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lot Card 7 -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card" style="transform: translateY(768px)">
+        <img src="https://placehold.co/80x60?text=Lot" alt="2020 Hyundai HX330L Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2020 Hyundai HX330L Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #129 • 7 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">42 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-gray-700">$165,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$5,205</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm">06:45</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $4,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lot Card 8 -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card" style="transform: translateY(896px)">
+        <img src="https://placehold.co/80x60?text=Lot" alt="2021 Doosan DX350LC-7 Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2021 Doosan DX350LC-7 Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #130 • 5 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">31 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-gray-700">$172,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$5,425</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm">07:30</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $4,500
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lot Card 9 -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card" style="transform: translateY(1024px)">
+        <img src="https://placehold.co/80x60?text=Lot" alt="2019 JCB JS330LC Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2019 JCB JS330LC Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #131 • 4 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">19 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-gray-700">$148,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$4,670</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm">08:15</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $3,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lot Card 10 -->
+      <div class="bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card" style="transform: translateY(1152px)">
+        <img src="https://placehold.co/80x60?text=Lot" alt="2020 Sany SY335C Excavator" class="w-20 h-15 object-cover rounded border">
+        <div class="flex-1 flex flex-col justify-between">
+          <div>
+            <h2 class="font-semibold text-sm mb-0.5">2020 Sany SY335C Excavator</h2>
+            <div class="text-xs text-gray-500 flex items-center gap-2">
+              <span>Lot #132 • 3 bids</span>
+              <span class="flex items-center gap-1 text-indigo-600">
+                <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="watch-count">23 watching</span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-500">Current Bid:</span>
+                <span class="text-base font-bold text-gray-700">$142,000</span>
+              </div>
+              <div class="monthly-payment text-xs text-gray-500">
+                <span class="font-medium">$4,480</span>/mo
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Closing in:</span>
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-mono text-sm">09:00</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-500">Bid Now:</span>
+              <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                + $3,000
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Lots Section -->
+    <section class="upcoming-lots-section mt-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-gray-800">Upcoming Lots</h2>
+        <button class="text-sm text-orange-600 font-medium flex items-center gap-1">
+          <span>View All</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable Container -->
+      <div class="relative">
+        <!-- Shadow Indicators -->
+        <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-100 to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-100 to-transparent z-10 pointer-events-none"></div>
+
+        <!-- Scroll Container -->
+        <div class="upcoming-lots-container flex overflow-x-auto gap-3 pb-2 hide-scrollbar -mx-4 px-4">
+          <!-- Upcoming Lot Card 1 -->
+          <div class="flex-shrink-0 w-72 bg-white rounded-lg shadow p-3 border-l-4 border-gray-300" data-upcoming="true">
+            <div class="flex gap-3">
+              <img src="https://placehold.co/80x60?text=Lot" alt="2021 CAT 336 Excavator" class="w-20 h-15 object-cover rounded border">
+              <div class="flex-1">
+                <h3 class="font-semibold text-sm mb-0.5">2021 CAT 336 Excavator</h3>
+                <div class="text-xs text-gray-500">Lot #189 • Starting Bid</div>
+                <div class="text-sm font-bold text-gray-700 mt-1">$180,000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t">
+              <span class="text-xs text-gray-500">Closing in 45 min</span>
+              <button class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">Add to Watchlist</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Lot Card 2 -->
+          <div class="flex-shrink-0 w-72 bg-white rounded-lg shadow p-3 border-l-4 border-gray-300" data-upcoming="true">
+            <div class="flex gap-3">
+              <img src="https://placehold.co/80x60?text=Lot" alt="2022 John Deere 350G LC" class="w-20 h-15 object-cover rounded border">
+              <div class="flex-1">
+                <h3 class="font-semibold text-sm mb-0.5">2022 John Deere 350G LC</h3>
+                <div class="text-xs text-gray-500">Lot #190 • Starting Bid</div>
+                <div class="text-sm font-bold text-gray-700 mt-1">$165,000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t">
+              <span class="text-xs text-gray-500">Closing in 1h 15m</span>
+              <button class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">Add to Watchlist</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Lot Card 3 -->
+          <div class="flex-shrink-0 w-72 bg-white rounded-lg shadow p-3 border-l-4 border-gray-300" data-upcoming="true">
+            <div class="flex gap-3">
+              <img src="https://placehold.co/80x60?text=Lot" alt="2019 Liebherr R946 Excavator" class="w-20 h-15 object-cover rounded border">
+              <div class="flex-1">
+                <h3 class="font-semibold text-sm mb-0.5">2019 Liebherr R946 Excavator</h3>
+                <div class="text-xs text-gray-500">Lot #191 • Starting Bid</div>
+                <div class="text-sm font-bold text-gray-700 mt-1">$155,000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t">
+              <span class="text-xs text-gray-500">Closing in 1h 30m</span>
+              <button class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">Add to Watchlist</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Lot Card 4 -->
+          <div class="flex-shrink-0 w-72 bg-white rounded-lg shadow p-3 border-l-4 border-gray-300" data-upcoming="true">
+            <div class="flex gap-3">
+              <img src="https://placehold.co/80x60?text=Lot" alt="2020 Case CX350D Excavator" class="w-20 h-15 object-cover rounded border">
+              <div class="flex-1">
+                <h3 class="font-semibold text-sm mb-0.5">2020 Case CX350D Excavator</h3>
+                <div class="text-xs text-gray-500">Lot #192 • Starting Bid</div>
+                <div class="text-sm font-bold text-gray-700 mt-1">$162,000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t">
+              <span class="text-xs text-gray-500">Closing in 1h 45m</span>
+              <button class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">Add to Watchlist</button>
+            </div>
+          </div>
+
+          <!-- Upcoming Lot Card 5 -->
+          <div class="flex-shrink-0 w-72 bg-white rounded-lg shadow p-3 border-l-4 border-gray-300" data-upcoming="true">
+            <div class="flex gap-3">
+              <img src="https://placehold.co/80x60?text=Lot" alt="2021 XCMG XE370C Excavator" class="w-20 h-15 object-cover rounded border">
+              <div class="flex-1">
+                <h3 class="font-semibold text-sm mb-0.5">2021 XCMG XE370C Excavator</h3>
+                <div class="text-xs text-gray-500">Lot #193 • Starting Bid</div>
+                <div class="text-sm font-bold text-gray-700 mt-1">$158,000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t">
+              <span class="text-xs text-gray-500">Closing in 2h</span>
+              <button class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">Add to Watchlist</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bid Confirmation Modal -->
+    <div id="bidConfirmationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 hidden">
+      <div class="bg-white rounded-lg shadow-lg w-10/12 max-w-xs p-6 flex flex-col items-center">
+        <svg class="w-10 h-10 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="font-semibold text-lg mb-1">Bid Placed!</h3>
+        <p class="text-sm text-gray-600 text-center mb-2">Your bid of <span id="bidAmount" class="font-bold"></span> was submitted for Lot #<span id="lotNumber"></span>.</p>
+        <button onclick="closeBidConfirmation()" class="mt-2 px-4 py-2 bg-orange-500 text-white rounded font-semibold">OK</button>
+      </div>
+    </div>
+
+    <!-- Bid Confirmation Check Modal -->
+    <div id="bidConfirmCheckModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 hidden">
+      <div class="bg-white rounded-lg shadow-lg w-10/12 max-w-sm p-6">
+        <h3 class="font-semibold text-lg mb-3 text-gray-800">Confirm Your Bid</h3>
+        <p class="text-sm text-gray-600 mb-4">Are you sure you want to place a bid of <span id="confirmBidAmount" class="font-bold text-orange-600"></span> on Lot #<span id="confirmLotNumber" class="font-bold"></span>?</p>
+        <div class="flex gap-3 justify-end">
+          <button onclick="cancelBid()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded font-medium hover:bg-gray-300 transition">Cancel</button>
+          <button onclick="confirmBid()" class="px-4 py-2 bg-orange-500 text-white rounded font-medium hover:bg-orange-600 transition">Place Bid</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div id="notificationsContainer" class="fixed right-4 flex flex-col-reverse gap-2 z-50 max-w-sm w-80 pointer-events-none" style="top: calc(64px + 56px + 1rem);">
+      <style>
+        .notification-enter {
+          animation: slideIn 0.3s ease-out forwards;
+          margin-bottom: 0.5rem;
+          pointer-events: auto;
+          transform-origin: top right;
+        }
+
+        .notification-exit {
+          animation: slideOut 0.3s ease-in forwards;
+        }
+
+        @keyframes slideIn {
+          from { 
+            transform: translateX(100%) scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideOut {
+          from {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+          }
+          to {
+            transform: translateX(100%) scale(0.95);
+            opacity: 0;
+          }
+        }
+
+        #notificationsContainer > div {
+          background: rgba(255, 255, 255, 0.98);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          border-radius: 0.5rem;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+        }
+      </style>
+    </div>
+  </div>
+
+  <style>
+    /* Hide scrollbar but keep functionality */
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Lot Card Styles */
+    .lots-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      position: relative;
+      min-height: 200px;
+      padding: 0.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .lots-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .lot-card {
+      position: relative;
+      transform: translate3d(0, 0, 0);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      background: white;
+      z-index: 1;
+      height: fit-content;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+    }
+
+    .lot-card.closing {
+      opacity: 0;
+      transform: translate3d(-100%, 0, 0) !important;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lot-card.new-lot {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+
+    .lot-card.new-lot.show {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Entry and Exit Animations */
+    .lot-enter {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+
+    .lot-enter.active {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lot-exit {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .lot-exit.active {
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Animations */
+    @keyframes timeExtendedSlide {
+      0% { transform: translate3d(0, var(--start-y), 0); }
+      50% { transform: translate3d(0, calc(var(--start-y) - 20px), 0); }
+      100% { transform: translate3d(0, var(--final-y), 0); }
+    }
+
+    .time-extended-move {
+      animation: timeExtendedSlide 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes outbidPulse {
+      0% { 
+        border-color: #ef4444;
+        box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+      }
+      50% { 
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+      }
+      100% { 
+        border-color: #ef4444;
+        box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+      }
+    }
+
+    .outbid-alert {
+      animation: outbidPulse 2s infinite;
+      border-left-width: 4px;
+      border: 1px solid #ef4444;
+      border-left-width: 4px;
+      position: relative;
+    }
+
+    .outbid-alert::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 0.5rem;
+      pointer-events: none;
+      animation: outbidGlow 2s infinite;
+    }
+
+    @keyframes outbidGlow {
+      0% {
+        background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent 50%);
+      }
+      50% {
+        background: linear-gradient(to right, rgba(239, 68, 68, 0.1), transparent 50%);
+      }
+      100% {
+        background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent 50%);
+      }
+    }
+
+    /* Notification Animations */
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    .notification-enter {
+      animation: slideIn 0.3s ease-out forwards;
+      margin-bottom: 0.5rem;
+    }
+
+    .notification-exit {
+      animation: slideOut 0.3s ease-in forwards;
+    }
+
+    /* Upcoming lots scroll styles */
+    .upcoming-lots-container {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .upcoming-lots-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Ensure upcoming lots section is properly spaced */
+    .upcoming-lots-section {
+      margin-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    /* Notifications Container */
+    #notificationsContainer {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+    }
+
+    #notificationsContainer > div {
+      transition: all 0.3s ease-in-out;
+    }
+
+    /* Lot Transitions */
+    .lot-transition {
+      transition: all 0.8s ease-in-out;
+    }
+    
+    .lot-card.new-lot {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+    
+    .lot-card.new-lot.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .lot-card.closing {
+      opacity: 0;
+      transform: translateX(-100%) !important;
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+    }
+
+    /* Analytics Animations */
+    @keyframes numberUpdate {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .analytics-update {
+      animation: numberUpdate 1s ease-out;
+    }
+
+    .progress-bar-container {
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      transition: width 1s ease-in-out;
+    }
+
+    /* Add responsive styles */
+    @media (max-width: 1023px) {
+      .lot-card {
+        flex-direction: row !important;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .lot-card {
+        margin: 0;
+      }
+    }
+
+    /* Add these styles in the existing style section */
+    .lot-card.highlight-move {
+      animation: highlightMove 4s ease-out;
+      z-index: 10;
+    }
+
+    .lot-moved-indicator {
+      position: absolute;
+      background: rgba(79, 70, 229, 0.1);
+      border: 2px solid #4F46E5;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      color: #4F46E5;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate3d(0, -20px, 0);
+      transition: all 0.5s ease-out;
+      z-index: 20;
+    }
+
+    .lot-moved-indicator.show {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    @keyframes highlightMove {
+      0% {
+        box-shadow: 0 0 0 2px #4F46E5;
+        background-color: rgba(79, 70, 229, 0.1);
+      }
+      85% {
+        box-shadow: 0 0 0 2px #4F46E5;
+        background-color: rgba(79, 70, 229, 0.1);
+      }
+      100% {
+        box-shadow: none;
+        background-color: white;
+      }
+    }
+
+    .movement-trail {
+      position: fixed;
+      pointer-events: none;
+      z-index: 5;
+      width: 4px;
+      background: linear-gradient(to bottom, #4F46E5 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .movement-trail.show {
+      opacity: 1;
+    }
+
+    @keyframes soldPulse {
+      0% {
+        background-color: rgba(22, 163, 74, 0.1);
+        border-color: #16a34a;
+      }
+      50% {
+        background-color: rgba(22, 163, 74, 0.2);
+        border-color: #16a34a;
+      }
+      100% {
+        background-color: rgba(22, 163, 74, 0.1);
+        border-color: #16a34a;
+      }
+    }
+
+    .lot-card.sold {
+      animation: soldPulse 2s infinite;
+      border-left-color: #16a34a !important;
+    }
+
+    .sold-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(22, 163, 74, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .sold-overlay.show {
+      opacity: 1;
+    }
+
+    .sold-stamp {
+      background: #16a34a;
+      color: white;
+      padding: 0.5rem 2rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      transform: rotate(-15deg);
+      border-radius: 0.25rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: rotate(-15deg) scale(0.8);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sold-stamp.show {
+      opacity: 1;
+      transform: rotate(-15deg) scale(1);
+    }
+
+    .lot-card.closing {
+      opacity: 1;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out;
+    }
+
+    .lot-card.closing.fade-out {
+      opacity: 0;
+      transform: scale(0.95) !important;
+    }
+
+    /* Add these styles in the style section */
+    .watchlist-indicator {
+      position: absolute;
+      top: 2.75rem; /* Move below the winning/outbid status */
+      right: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s ease-out;
+      z-index: 5;
+    }
+
+    .watchlist-indicator.in-watchlist {
+      background-color: rgba(79, 70, 229, 0.1);
+      color: #4F46E5;
+    }
+
+    .watchlist-indicator.not-in-watchlist {
+      background-color: rgba(156, 163, 175, 0.1);
+      color: #6B7280;
+    }
+
+    .watchlist-toggle {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.25rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+    }
+
+    .watchlist-toggle:hover {
+      background-color: rgba(79, 70, 229, 0.1);
+    }
+
+    .watchlist-toggle.in-watchlist {
+      color: #4F46E5;
+    }
+
+    .watchlist-toggle.not-in-watchlist {
+      color: #6B7280;
+    }
+
+    @keyframes watchlistPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .watchlist-pop {
+      animation: watchlistPop 0.3s ease-out;
+    }
+
+    /* Update the bid status positioning */
+    .bid-status {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      z-index: 6;
+    }
+
+    /* Add these styles in the style section */
+    .online-bidders {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(22, 163, 74, 0.1);
+      border-radius: 9999px;
+      color: #15803d;
+      font-weight: 500;
+    }
+
+    .online-pulse {
+      position: relative;
+      width: 8px;
+      height: 8px;
+    }
+
+    .online-pulse::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #15803d;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .online-pulse::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #15803d;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(2);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0;
+      }
+    }
+
+    .bidder-change {
+      transition: all 0.3s ease-out;
+    }
+
+    .bidder-change.increase {
+      color: #15803d;
+      transform: scale(1.1);
+    }
+
+    .bidder-change.decrease {
+      color: #dc2626;
+      transform: scale(0.9);
+    }
+
+    /* Add these styles in the style section */
+    .new-lot-badge {
+      position: absolute;
+      top: -0.5rem;
+      left: -0.5rem;
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transform: rotate(-12deg);
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+    }
+
+    .new-lot-badge::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border: 2px solid #F59E0B;
+      border-radius: 0.5rem;
+      animation: badgePulse 2s infinite;
+    }
+
+    @keyframes badgePulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+    }
+
+    .lot-card.new-lot {
+      animation: newLotHighlight 5s ease-out;
+    }
+
+    @keyframes newLotHighlight {
+      0% {
+        box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1),
+                    0 0 0 2px rgba(245, 158, 11, 0.5);
+        background: linear-gradient(to right, rgba(245, 158, 11, 0.1), transparent);
+      }
+      80% {
+        box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1),
+                    0 0 0 2px rgba(245, 158, 11, 0.5);
+        background: linear-gradient(to right, rgba(245, 158, 11, 0.1), transparent);
+      }
+      100% {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        background: white;
+      }
+    }
+
+    /* Add a ribbon effect to make it more distinct */
+    .new-lot-badge::before {
+      content: '';
+      position: absolute;
+      bottom: -0.25rem;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 0.5rem;
+      height: 0.5rem;
+      background: #D97706;
+      z-index: -1;
+    }
+
+    /* Add these styles in the style section */
+    .user-section {
+      position: relative;
+      padding: 0.75rem;
+      background: white;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      max-width: 5xl;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .user-avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 9999px;
+      background: #E5E7EB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #4B5563;
+      border: 2px solid #D1D5DB;
+    }
+
+    .user-details {
+      flex: 1;
+    }
+
+    .approval-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .approval-badge.approved {
+      background-color: rgba(22, 163, 74, 0.1);
+      color: #15803d;
+    }
+
+    .approval-badge svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .bid-limits {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .bid-limit-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .bid-limit-label {
+      font-size: 0.75rem;
+      color: #6B7280;
+    }
+
+    .bid-limit-value {
+      font-weight: 600;
+      color: #1F2937;
+    }
+
+    .bid-limit-bar {
+      width: 100%;
+      height: 4px;
+      background: #E5E7EB;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .bid-limit-progress {
+      height: 100%;
+      background: #16A34A;
+      border-radius: 9999px;
+      transition: width 0.3s ease-out;
+    }
+
+    .bid-limit-progress.warning {
+      background: #F59E0B;
+    }
+
+    .bid-limit-progress.critical {
+      background: #DC2626;
+    }
+
+    /* Updated User Section Styles */
+    .user-section-wrapper {
+      position: relative;
+      z-index: 50;
+    }
+
+    .user-section-compact {
+      transition: background-color 0.2s;
+    }
+
+    .user-section-compact:hover {
+      background-color: #f8fafc;
+    }
+
+    .user-section-expanded {
+      transition: all 0.3s ease-out;
+      max-height: 0;
+      overflow: hidden;
+    }
+
+    .user-section-expanded.show {
+      max-height: 200px;
+    }
+
+    .user-section-chevron {
+      transition: transform 0.2s ease-out;
+    }
+
+    .user-section-chevron.rotate {
+      transform: rotate(180deg);
+    }
+
+    /* Update approval badge for compact view */
+    .approval-badge.approved {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    /* Ensure smooth animation for bid limit bars */
+    .bid-limit-progress {
+      transition: width 0.3s ease-out;
+    }
+
+    /* Add these styles before other styles */
+    .user-dropdown {
+      transform-origin: top right;
+      transition: all 0.2s ease-out;
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .user-dropdown.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .dropdown-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: transparent;
+    }
+
+    .user-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      background: #E5E7EB;
+      font-weight: 600;
+      color: #4B5563;
+      border: 2px solid #D1D5DB;
+    }
+
+    .bid-limit-bar {
+      width: 100%;
+      height: 4px;
+      background: #E5E7EB;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .bid-limit-progress {
+      height: 100%;
+      background: #16A34A;
+      border-radius: 9999px;
+      transition: width 0.3s ease-out;
+    }
+
+    .bid-limit-progress.warning {
+      background: #F59E0B;
+    }
+
+    .bid-limit-progress.critical {
+      background: #DC2626;
+    }
+
+    .downpayment-btn.active,
+    .term-btn.active {
+      background-color: #f97316;
+      color: white;
+      border-color: #f97316;
+    }
+
+    .downpayment-btn:hover,
+    .term-btn:hover {
+      background-color: #fdba74;
+      border-color: #fdba74;
+      color: white;
+    }
+
+    /* Add these styles to your existing styles section */
+    @keyframes progressPulse {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.2;
+      }
+      100% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    .progress-pulse {
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      animation: progressPulse 2s ease-in-out infinite;
+    }
+
+    .progress-bar {
+      position: relative;
+      transform-origin: left;
+    }
+
+    .progress-bar.animate {
+      animation: progressIncrease 0.5s ease-out;
+    }
+
+    @keyframes progressIncrease {
+      0% {
+        transform: scaleX(0.98);
+      }
+      50% {
+        transform: scaleX(1.02);
+      }
+      100% {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Add these styles for price animations */
+    .price-update {
+      animation: priceUpdate 0.6s ease-out;
+    }
+
+    .price-flash {
+      animation: priceFlash 1.5s ease-in-out;
+    }
+
+    @keyframes priceUpdate {
+      0% {
+        transform: scale(1);
+        color: inherit;
+      }
+      50% {
+        transform: scale(1.1);
+        color: #059669;
+      }
+      100% {
+        transform: scale(1);
+        color: inherit;
+      }
+    }
+
+    @keyframes priceFlash {
+      0% {
+        background-color: rgba(5, 150, 105, 0);
+      }
+      35% {
+        background-color: rgba(5, 150, 105, 0.1);
+      }
+      100% {
+        background-color: rgba(5, 150, 105, 0);
+      }
+    }
+
+    /* Add this before the closing </style> tag */
+    .monthly-payment.updating {
+      animation: monthlyUpdate 0.6s ease-out;
+    }
+
+    @keyframes monthlyUpdate {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      50% {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      51% {
+        transform: translateY(10px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <script>
+    // Initialize lot manager when DOM is ready
+    let lotManager;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize lot manager
+      lotManager = new LotManager();
+
+      // Add bid button handlers
+      document.querySelectorAll('button[class*="bg-orange-500"]').forEach(button => {
+        button.addEventListener('click', function() {
+          const lotCard = this.closest('.lot-card');
+          const lotNumber = lotManager.getLotNumber(lotCard);
+          if (lotNumber) {
+            const currentBid = lotCard.querySelector('span[class*="font-bold"]').textContent;
+            const bidIncrement = this.textContent.trim();
+            const currentBidValue = parseInt(currentBid.replace(/[^\d]/g, ''));
+            const bidIncrementValue = parseInt(bidIncrement.replace(/[^\d]/g, ''));
+            const newBidAmount = '$' + (currentBidValue + bidIncrementValue).toLocaleString();
+            
+            showBidConfirmCheck(bidIncrement, lotNumber, newBidAmount);
+          }
+        });
+      });
+
+      // Check if welcome modal should be shown
+      if (!localStorage.getItem('welcomeShown')) {
+        document.getElementById('welcomeModal').classList.remove('hidden');
+      }
+
+      // Start the timer updates
+      setInterval(() => {
+        lotManager.updateTimers();
+      }, 1000);
+    });
+
+    class LotManager {
+      constructor() {
+        this.lots = new Map();
+        this.upcomingLots = new Map();
+        this.activeNotifications = [];
+        this.watchlist = new Set();
+        this.watchCounts = new Map(); // Add watch counts map
+        this.analytics = {
+          totalLots: 1200,
+          lotsSold: 847,
+          totalValue: 24500000,
+          yourWins: 12,
+          valueWon: 890000,
+          pendingLots: 353
+        };
+        
+        // Initialize lots and setup
+        this.initializeLots();
+        this.initializeUpcomingLots();
+        this.startRandomNotifications();
+        this.initializeRandomWatchlist();
+        this.initializeWatchCounts(); // Add this line
+        
+        // Start periodic updates
+        this.startWatchCountUpdates(); // Add this line
+        
+        // Log initial state
+        console.log('LotManager initialized with analytics:', this.analytics);
+        
+        this.onlineBidders = 12847;
+        this.startOnlineBidderUpdates();
+
+        this.userLimits = {
+          singleBid: {
+            limit: 250000,
+            used: 100000
+          },
+          totalBid: {
+            limit: 1000000,
+            used: 750000
+          },
+          activeBids: {
+            limit: 40,
+            used: 12
+          }
+        };
+        
+        this.updateBidLimits();
+      }
+
+      initializeRandomWatchlist() {
+        // Randomly add some lots to watchlist
+        this.lots.forEach((lot, lotNumber) => {
+          if (Math.random() < 0.3) { // 30% chance to be in watchlist
+            this.watchlist.add(lotNumber);
+            this.updateWatchlistIndicator(lot.element, lotNumber);
+          }
+        });
+      }
+
+      updateWatchlistIndicator(element, lotNumber) {
+        const isWatched = this.watchlist.has(lotNumber);
+        
+        // Remove existing indicator if any
+        const existingIndicator = element.querySelector('.watchlist-indicator');
+        if (existingIndicator) {
+          existingIndicator.remove();
+        }
+
+        // Create new indicator
+        const indicator = document.createElement('div');
+        indicator.className = `watchlist-indicator ${isWatched ? 'in-watchlist' : 'not-in-watchlist'}`;
+        
+        // Add icon and text
+        indicator.innerHTML = `
+          <svg class="w-4 h-4" fill="${isWatched ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>${isWatched ? 'Watching' : 'Add to Watchlist'}</span>
+        `;
+
+        // Make it clickable
+        indicator.style.cursor = 'pointer';
+        indicator.onclick = (e) => {
+          e.stopPropagation();
+          this.toggleWatchlist(lotNumber);
+        };
+
+        element.appendChild(indicator);
+      }
+
+      toggleWatchlist(lotNumber) {
+        const lot = this.lots.get(lotNumber);
+        if (!lot) return;
+
+        const isCurrentlyWatched = this.watchlist.has(lotNumber);
+        
+        if (isCurrentlyWatched) {
+          this.watchlist.delete(lotNumber);
+          this.showNotification(
+            'Removed from Watchlist',
+            `Lot #${lotNumber} removed from your watchlist`
+          );
+        } else {
+          this.watchlist.add(lotNumber);
+          this.showNotification(
+            'Added to Watchlist',
+            `Lot #${lotNumber} added to your watchlist`
+          );
+        }
+
+        // Update indicator with animation
+        const element = lot.element;
+        const indicator = element.querySelector('.watchlist-indicator');
+        if (indicator) {
+          indicator.classList.add('watchlist-pop');
+          setTimeout(() => indicator.classList.remove('watchlist-pop'), 300);
+        }
+
+        this.updateWatchlistIndicator(element, lotNumber);
+      }
+
+      initializeLots() {
+        const lotCards = document.querySelectorAll('.lot-card');
+        const maxTime = 300; // 5 minutes
+        
+        lotCards.forEach((card, index) => {
+          const lotNumber = this.getLotNumber(card);
+          if (lotNumber) {
+            const timeRemaining = Math.min(30 + (index * 20), maxTime);
+            const timeDisplay = card.querySelector('.font-mono');
+            
+            if (timeDisplay) {
+              timeDisplay.textContent = this.formatTime(timeRemaining);
+              if (timeRemaining <= 120) {
+                timeDisplay.classList.add('text-red-600');
+                timeDisplay.previousElementSibling?.classList.add('text-red-500', 'animate-pulse');
+              }
+            }
+
+            // Add financing information if price > $15,000
+            const priceElement = card.querySelector('span[class*="font-bold"]');
+            if (priceElement) {
+              const price = parseInt(priceElement.textContent.replace(/[^0-9]/g, ''));
+              if (price > 15000) {
+                const monthlyPayment = this.calculateMonthlyPayment(price);
+                const paymentContainer = card.querySelector('.monthly-payment');
+                if (paymentContainer) {
+                  paymentContainer.innerHTML = `
+                    <span class="font-medium">$${monthlyPayment.toLocaleString()}</span>/mo
+                  `;
+                }
+              }
+            }
+
+            this.lots.set(lotNumber, {
+              element: card,
+              timeRemaining: timeRemaining,
+              hasExtended: false,
+              originalPosition: parseFloat(card.style.transform.match(/translateY\((.*?)px\)/)[1] || 0)
+            });
+
+            // Attach bid handlers
+            this.attachBidHandlers(card);
+
+            if (timeRemaining > maxTime) {
+              card.style.display = 'none';
+            } else {
+              card.style.display = 'flex';
+            }
+          }
+        });
+
+        this.reorderLots();
+      }
+
+      initializeUpcomingLots() {
+        const upcomingCards = document.querySelectorAll('[data-upcoming="true"]');
+        upcomingCards.forEach(card => {
+          const lotNumber = this.getLotNumber(card);
+          if (lotNumber) {
+            const timeText = card.querySelector('.text-xs.text-gray-500').textContent;
+            const timeMatch = timeText.match(/(\d+)h(?:\s+(\d+)m)?/);
+            let timeUntilStart = 0;
+            
+            if (timeMatch) {
+              const hours = parseInt(timeMatch[1]) || 0;
+              const minutes = parseInt(timeMatch[2]) || 0;
+              timeUntilStart = (hours * 3600) + (minutes * 60);
+            }
+
+            this.upcomingLots.set(lotNumber, {
+              element: card,
+              timeUntilStart: timeUntilStart,
+              title: card.querySelector('h3').textContent,
+              startingBid: parseInt(card.querySelector('.text-sm.font-bold').textContent.replace(/[^0-9]/g, ''))
+            });
+          }
+        });
+      }
+
+      startTimeUpdates() {
+        setInterval(() => {
+          this.updateTimers();
+        }, 1000);
+      }
+
+      updateTimers() {
+        let needsReorder = false;
+        
+        for (const [lotNumber, lot] of this.lots) {
+          if (lot.timeRemaining > 0) {
+            lot.timeRemaining--;
+            const timeDisplay = lot.element.querySelector('.font-mono');
+            if (timeDisplay) {
+              timeDisplay.textContent = this.formatTime(lot.timeRemaining);
+              
+              if (lot.timeRemaining <= 120) {
+                timeDisplay.classList.add('text-red-600');
+                timeDisplay.previousElementSibling?.classList.add('text-red-500', 'animate-pulse');
+              }
+              
+              if (lot.timeRemaining === 0) {
+                console.log('Lot closing:', lotNumber);
+                needsReorder = true;
+                
+                // Get final bid amount before closing
+                const finalBidElement = lot.element.querySelector('span[class*="font-bold"]');
+                const finalBid = parseInt(finalBidElement?.textContent.replace(/[^\d]/g, '')) || 0;
+                
+                // Show sold state
+                this.showSoldState(lot.element, lotNumber, finalBid);
+                
+                // Update analytics and remove lot
+                setTimeout(() => {
+                  this.updateAnalytics(lotNumber, finalBid);
+                  this.showNotification('Lot Closed', `Lot #${lotNumber} has closed at $${finalBid.toLocaleString()}`);
+                  
+                  // Remove lot after sold animation
+                  setTimeout(() => {
+                    lot.element.classList.add('fade-out');
+                    setTimeout(() => {
+                      this.lots.delete(lotNumber);
+                      lot.element.remove();
+                      this.promoteUpcomingLot();
+                      this.reorderLots();
+                    }, 300);
+                  }, 500);
+                }, 1200);
+              }
+            }
+          }
+        }
+
+        if (needsReorder) {
+          this.reorderLots();
+        }
+      }
+
+      reorderLots() {
+        const sortedLots = Array.from(this.lots.entries())
+          .sort((a, b) => a[1].timeRemaining - b[1].timeRemaining);
+
+        const cardHeight = 128;
+        const columns = window.innerWidth >= 1024 ? 2 : 1;
+        
+        sortedLots.forEach(([, lot], index) => {
+          if (!lot.element.classList.contains('closing')) {
+            const column = columns === 1 ? 0 : index % 2;
+            const row = Math.floor(index / columns);
+            
+            lot.element.style.transform = `translate3d(0, 0, 0)`;
+            lot.element.style.gridColumn = column + 1;
+            lot.element.style.gridRow = row + 1;
+            
+            lot.element.classList.add('lot-transition');
+            
+            // Reattach bid handlers after reordering
+            this.attachBidHandlers(lot.element);
+          }
+        });
+
+        const container = document.querySelector('.lots-container');
+        if (container) {
+          const rows = Math.ceil(sortedLots.length / columns);
+          container.style.transition = 'min-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+          container.style.minHeight = `${rows * cardHeight}px`;
+        }
+      }
+
+      promoteUpcomingLot() {
+        const upcomingLots = Array.from(this.upcomingLots.entries())
+          .filter(([, lot]) => !lot.promoted)
+          .sort((a, b) => a[1].timeUntilStart - b[1].timeUntilStart);
+
+        if (upcomingLots.length > 0) {
+          const [lotNumber, upcomingLot] = upcomingLots[0];
+          
+          // Calculate monthly payment if price > $15,000
+          const monthlyPayment = upcomingLot.startingBid > 15000 
+            ? this.calculateMonthlyPayment(upcomingLot.startingBid) 
+            : null;
+          
+          const newLotCard = document.createElement('div');
+          newLotCard.className = 'bg-white rounded-lg shadow flex flex-col md:flex-row md:items-stretch p-2 gap-2 border-l-4 border-gray-300 relative lot-card new-lot';
+          
+          // Add NEW badge
+          const newBadge = document.createElement('div');
+          newBadge.className = 'new-lot-badge';
+          newBadge.textContent = 'NEW';
+          newLotCard.appendChild(newBadge);
+
+          // Initialize watch count for new lot
+          const initialCount = Math.floor(Math.random() * 96) + 5;
+          this.watchCounts.set(lotNumber, initialCount);
+
+          newLotCard.innerHTML = `
+            <img src="https://placehold.co/80x60?text=Lot" alt="${upcomingLot.title}" class="w-20 h-15 object-cover rounded border">
+            <div class="flex-1 flex flex-col justify-between">
+              <div>
+                <h2 class="font-semibold text-sm mb-0.5">${upcomingLot.title}</h2>
+                <div class="text-xs text-gray-500 flex items-center gap-2">
+                  <span>Lot #${lotNumber} • 0 bids</span>
+                  <span class="flex items-center gap-1 text-indigo-600">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+                      <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    <span class="watch-count">${initialCount} watching</span>
+                  </span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500">Current Bid:</span>
+                    <span class="text-base font-bold text-gray-700">$${upcomingLot.startingBid.toLocaleString()}</span>
+                  </div>
+                  ${monthlyPayment ? `
+                  <div class="monthly-payment text-xs text-gray-500">
+                    <span class="font-medium">$${monthlyPayment.toLocaleString()}</span>/mo
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-500">Closing in:</span>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="font-mono text-sm">05:00</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-500">Bid Now:</span>
+                  <button class="px-3 py-1 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition">
+                    + $3,000
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          const lotsContainer = document.querySelector('.lots-container');
+          if (lotsContainer) {
+            newLotCard.style.transform = 'translate3d(0, 20px, 0)';
+            lotsContainer.appendChild(newLotCard);
+            
+            this.lots.set(lotNumber, {
+              element: newLotCard,
+              timeRemaining: 300,
+              hasExtended: false
+            });
+
+            // Attach bid handlers to new lot
+            this.attachBidHandlers(newLotCard);
+
+            if (Math.random() < 0.3) {
+              this.watchlist.add(lotNumber);
+            }
+            this.updateWatchlistIndicator(newLotCard, lotNumber);
+            
+            upcomingLot.promoted = true;
+            
+            requestAnimationFrame(() => {
+              newLotCard.classList.add('show');
+              setTimeout(() => {
+                this.reorderLots();
+              }, 300);
+            });
+
+            this.showNotification('New Lot Available', `Lot #${lotNumber} is now open for bidding`);
+          }
+        }
+      }
+
+      extendTime(lotNumber) {
+        const lot = this.lots.get(lotNumber);
+        if (!lot) return;
+
+        // Store the current position before changes
+        const oldRect = lot.element.getBoundingClientRect();
+        
+        // Add 2 minutes but cap at 5 minutes total
+        const newTime = Math.min(lot.timeRemaining + 120, 300);
+        const actualExtension = newTime - lot.timeRemaining;
+        lot.timeRemaining = newTime;
+        lot.hasExtended = true;
+
+        // Create and show time extension indicator
+        const extensionIndicator = document.createElement('div');
+        extensionIndicator.className = 'text-sm font-medium absolute -top-6 left-4 opacity-0 transition-all duration-500 text-blue-600 flex items-center gap-1';
+        extensionIndicator.innerHTML = `
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>+2:00</span>
+        `;
+        lot.element.style.position = 'relative';
+        lot.element.appendChild(extensionIndicator);
+        
+        // Show extension indicator with animation
+        requestAnimationFrame(() => {
+          extensionIndicator.style.opacity = '1';
+          extensionIndicator.style.transform = 'translateY(-10px)';
+        });
+        
+        this.updateAllTimerDisplays();
+        this.reorderLots();
+
+        // After reordering, show movement indication
+        requestAnimationFrame(() => {
+          const newRect = lot.element.getBoundingClientRect();
+          this.showMovementIndication(lot.element, oldRect, newRect, lotNumber);
+          
+          // Cleanup extension indicator
+          setTimeout(() => {
+            extensionIndicator.style.opacity = '0';
+            extensionIndicator.style.transform = 'translateY(-20px)';
+            setTimeout(() => extensionIndicator.remove(), 500);
+          }, 2000);
+        });
+      }
+
+      showMovementIndication(element, oldRect, newRect, lotNumber) {
+        // Only show indication if position actually changed
+        if (oldRect.top === newRect.top && oldRect.left === newRect.left) {
+          return;
+        }
+
+        // Add highlight effect
+        element.classList.add('highlight-move');
+        setTimeout(() => {
+          element.classList.remove('highlight-move');
+        }, 4000);
+
+        // Create and show movement trail
+        const trail = document.createElement('div');
+        trail.className = 'movement-trail';
+        document.body.appendChild(trail);
+
+        // Position and size the trail
+        const height = Math.abs(newRect.top - oldRect.top);
+        const startX = oldRect.left + (oldRect.width / 2);
+        const startY = Math.min(oldRect.top, newRect.top);
+
+        trail.style.height = `${height}px`;
+        trail.style.left = `${startX}px`;
+        trail.style.top = `${startY}px`;
+
+        // Show the trail
+        requestAnimationFrame(() => {
+          trail.classList.add('show');
+        });
+
+        // Create and show "Lot Extended" indicator
+        const indicator = document.createElement('div');
+        indicator.className = 'lot-moved-indicator';
+        indicator.textContent = `Lot #${lotNumber} extended, 2 mins added`;
+        
+        // Position the indicator above the new position
+        indicator.style.left = `${newRect.left}px`;
+        indicator.style.top = `${newRect.top - 40}px`;
+        
+        document.body.appendChild(indicator);
+        
+        requestAnimationFrame(() => {
+          indicator.classList.add('show');
+        });
+
+        // Remove trail and indicator after animation
+        setTimeout(() => {
+          trail.classList.remove('show');
+          indicator.classList.remove('show');
+          
+          setTimeout(() => {
+            trail.remove();
+            indicator.remove();
+          }, 500);
+        }, 3500);
+      }
+
+      updateAllTimerDisplays() {
+        for (const [lotNumber, lot] of this.lots) {
+          const timeDisplay = lot.element.querySelector('.font-mono');
+          if (timeDisplay) {
+            timeDisplay.textContent = this.formatTime(lot.timeRemaining);
+            
+            if (lot.timeRemaining <= 120) {
+              timeDisplay.classList.add('text-red-600');
+              timeDisplay.previousElementSibling?.classList.add('text-red-500', 'animate-pulse');
+            } else {
+              timeDisplay.classList.remove('text-red-600');
+              timeDisplay.previousElementSibling?.classList.remove('text-red-500', 'animate-pulse');
+            }
+          }
+        }
+      }
+
+      showNotification(title, message) {
+        const container = document.getElementById('notificationsContainer');
+        if (!container) return;
+
+        const notification = document.createElement('div');
+        notification.className = 'bg-white rounded-lg shadow-lg p-3 notification-enter';
+        
+        const styles = [
+          { bg: 'bg-blue-100', text: 'text-blue-800', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+          { bg: 'bg-green-100', text: 'text-green-800', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+          { bg: 'bg-orange-100', text: 'text-orange-800', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+          { bg: 'bg-purple-100', text: 'text-purple-800', icon: 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9' }
+        ];
+        
+        const style = styles[Math.floor(Math.random() * styles.length)];
+        
+        notification.innerHTML = `
+          <div class="flex items-start gap-2 ${style.bg} p-3 rounded-lg">
+            <svg class="w-5 h-5 ${style.text} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="${style.icon}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="flex-1">
+              <div class="font-semibold text-sm">${title}</div>
+              <div class="text-xs opacity-75">${message}</div>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        `;
+
+        // If we have 4 notifications, remove the oldest one
+        if (this.activeNotifications.length >= 4) {
+          const oldestNotification = this.activeNotifications.shift();
+          oldestNotification.classList.replace('notification-enter', 'notification-exit');
+          setTimeout(() => oldestNotification.remove(), 300);
+        }
+
+        container.insertBefore(notification, container.firstChild);
+        this.activeNotifications.push(notification);
+
+        // Auto-dismiss after 10 seconds
+        const dismissTimer = setTimeout(() => {
+          const index = this.activeNotifications.indexOf(notification);
+          if (index > -1) {
+            this.activeNotifications.splice(index, 1);
+          }
+          notification.classList.replace('notification-enter', 'notification-exit');
+          setTimeout(() => notification.remove(), 300);
+        }, 10000);
+
+        // Manual dismiss
+        const dismissButton = notification.querySelector('button');
+        dismissButton.onclick = (e) => {
+          e.preventDefault();
+          clearTimeout(dismissTimer);
+          const index = this.activeNotifications.indexOf(notification);
+          if (index > -1) {
+            this.activeNotifications.splice(index, 1);
+          }
+          notification.classList.replace('notification-enter', 'notification-exit');
+          setTimeout(() => notification.remove(), 300);
+        };
+      }
+
+      getLotNumber(element) {
+        const lotText = element.querySelector('.text-xs.text-gray-500')?.textContent;
+        const match = lotText?.match(/Lot #(\d+)/);
+        return match ? match[1] : null;
+      }
+
+      formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+      }
+
+      startRandomNotifications() {
+        const notifications = [
+          { title: 'New Bid', message: (lot, amount) => `New bid on Lot #${lot}: $${amount}` },
+          { title: 'Outbid Alert', message: (lot, amount) => `You've been outbid on Lot #${lot}! Current bid: $${amount}` },
+          { title: 'Lot Extended', message: (lot) => `Time extended for Lot #${lot} due to recent activity` },
+          { title: 'Watching Alert', message: (lot, amount) => `Lot #${lot} you're watching received a new bid: $${amount}` },
+          { title: 'Lot Closing Soon', message: (lot) => `Lot #${lot} is closing in less than 1 minute!` }
+        ];
+
+        setInterval(() => {
+          const activeLots = Array.from(this.lots.entries())
+            .filter(([, lot]) => lot.timeRemaining > 0 && lot.timeRemaining <= 300);
+          
+          if (activeLots.length > 0) {
+            // Pick a random lot
+            const [lotNumber, lot] = activeLots[Math.floor(Math.random() * activeLots.length)];
+            
+            // Different types of random events
+            const eventType = Math.random();
+            
+            if (eventType < 0.3) { // 30% chance of bid + time extension
+              const bidIncrement = Math.floor(Math.random() * 4000) + 1000;
+              
+              // Update price with animation
+              this.updateLotPrice(lotNumber, bidIncrement);
+              
+              // Extend time if lot is closing soon (less than 2 minutes)
+              if (lot.timeRemaining < 120) {
+                this.extendTime(lotNumber);
+                
+                this.showNotification(
+                  'Time Extended',
+                  `Lot #${lotNumber} time extended due to last-minute bid of $${bidIncrement.toLocaleString()}`
+                );
+              } else {
+                this.showNotification(
+                  'New Bid',
+                  `New bid placed on Lot #${lotNumber}: +$${bidIncrement.toLocaleString()}`
+                );
+              }
+            } else if (eventType < 0.4) { // 10% chance of just time extension
+              if (lot.timeRemaining < 120) {
+                this.extendTime(lotNumber);
+                this.showNotification(
+                  'Time Extended',
+                  `Additional time added to Lot #${lotNumber} due to high activity`
+                );
+              }
+            } else { // 60% chance of regular notification
+              const notification = notifications[Math.floor(Math.random() * notifications.length)];
+              const currentBid = parseInt(lot.element.querySelector('span[class*="font-bold"]')?.textContent.replace(/[^0-9]/g, '')) || 100000;
+              const bidIncrement = Math.floor(Math.random() * 4000) + 1000;
+              const newBid = currentBid + bidIncrement;
+              
+              this.showNotification(
+                notification.title,
+                notification.message(lotNumber, newBid.toLocaleString())
+              );
+            }
+          }
+        }, 10000);
+      }
+
+      updateAnalytics(lotNumber, finalBid) {
+        console.log('Updating analytics:', { lotNumber, finalBid });
+        
+        // Store old values for animation
+        const oldAnalytics = { ...this.analytics };
+        
+        // Update analytics values
+        this.analytics.lotsSold++;
+        this.analytics.totalValue += finalBid;
+        this.analytics.pendingLots--;
+
+        // Calculate new sale progress
+        const saleProgress = ((this.analytics.lotsSold / this.analytics.totalLots) * 100).toFixed(1);
+        
+        // Update progress bar with animation
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+          // Add animation class
+          progressBar.classList.add('animate');
+          
+          // Update width with transition
+          setTimeout(() => {
+            progressBar.style.width = `${saleProgress}%`;
+          }, 50);
+          
+          // Remove animation class after animation completes
+          setTimeout(() => {
+            progressBar.classList.remove('animate');
+          }, 600);
+        }
+
+        // Update other analytics displays
+        const stats = document.querySelectorAll('.analytics-value');
+        stats.forEach(stat => {
+          const key = stat.dataset.stat;
+          if (key && this.analytics[key] !== undefined) {
+            let startValue, endValue;
+            
+            switch(key) {
+              case 'lots-sold':
+                startValue = oldAnalytics.lotsSold;
+                endValue = this.analytics.lotsSold;
+                break;
+              case 'total-value':
+                startValue = oldAnalytics.totalValue;
+                endValue = this.analytics.totalValue;
+                break;
+              case 'pending-lots':
+                startValue = oldAnalytics.pendingLots;
+                endValue = this.analytics.pendingLots;
+                break;
+              default:
+                return;
+            }
+
+            // Format based on stat type
+            const formatter = key === 'total-value' 
+              ? (val) => '$' + this.formatCurrency(val)
+              : (val) => Math.round(val).toLocaleString();
+
+            // Animate the number
+            this.animateNumber(stat, startValue, endValue, formatter);
+          }
+        });
+      }
+
+      formatCurrency(value) {
+        if (value >= 1000000) {
+          return (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+          return (value / 1000).toFixed(0) + 'K';
+        }
+        return value.toLocaleString();
+      }
+
+      animateNumber(element, start, end, formatter) {
+        const duration = 1000; // 1 second
+        const steps = 60;
+        const increment = (end - start) / steps;
+        let current = start;
+        let step = 0;
+
+        const animate = () => {
+          current += increment;
+          step++;
+
+          element.textContent = formatter(current);
+
+          if (step < steps) {
+            requestAnimationFrame(animate);
+          } else {
+            element.textContent = formatter(end); // Ensure we end on the exact number
+          }
+        };
+
+        requestAnimationFrame(animate);
+      }
+
+      showSoldState(element, lotNumber, finalBid) {
+        // Add sold class for background pulse
+        element.classList.add('sold');
+        
+        // Create sold overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'sold-overlay';
+        
+        const stamp = document.createElement('div');
+        stamp.className = 'sold-stamp';
+        stamp.textContent = 'SOLD';
+        
+        overlay.appendChild(stamp);
+        element.appendChild(overlay);
+        
+        // Trigger animations
+        requestAnimationFrame(() => {
+          overlay.classList.add('show');
+          stamp.classList.add('show');
+          
+          // Update bid button states
+          const bidButtons = element.querySelectorAll('button');
+          bidButtons.forEach(button => {
+            button.disabled = true;
+            button.classList.add('opacity-50', 'cursor-not-allowed');
+          });
+        });
+      }
+
+      startOnlineBidderUpdates() {
+        setInterval(() => {
+          const bidderElement = document.querySelector('.bidder-count');
+          if (!bidderElement) return;
+
+          // Store old value for comparison
+          const oldValue = this.onlineBidders;
+
+          // Random change between -5 and +8 bidders
+          const change = Math.floor(Math.random() * 14) - 5;
+          this.onlineBidders = Math.max(10000, this.onlineBidders + change);
+
+          // Update display with animation
+          bidderElement.textContent = `${this.onlineBidders.toLocaleString()} online bidders`;
+
+          // Add animation class based on change
+          if (change !== 0) {
+            bidderElement.classList.add(change > 0 ? 'increase' : 'decrease');
+            setTimeout(() => {
+              bidderElement.classList.remove('increase', 'decrease');
+            }, 300);
+          }
+
+          // Occasionally show a notification for big changes
+          if (Math.random() < 0.1) { // 10% chance
+            const randomLocation = ['Dubai', 'Singapore', 'London', 'New York', 'Tokyo', 'Sydney', 'Toronto'][Math.floor(Math.random() * 7)];
+            this.showNotification(
+              'Bidder Activity',
+              `${Math.floor(Math.random() * 50) + 10} new bidders joined from ${randomLocation}`
+            );
+          }
+        }, 3000); // Update every 3 seconds
+      }
+
+      updateBidLimits() {
+        const updateProgress = (used, limit, element) => {
+          if (!element) return;
+          const percentage = (used / limit) * 100;
+          element.style.width = `${percentage}%`;
+          
+          // Update color based on usage
+          element.classList.remove('warning', 'critical');
+          if (percentage >= 90) {
+            element.classList.add('critical');
+          } else if (percentage >= 70) {
+            element.classList.add('warning');
+          }
+        };
+
+        // Update single bid limit
+        updateProgress(
+          this.userLimits.singleBid.used,
+          this.userLimits.singleBid.limit,
+          document.querySelector('.bid-limit-item:nth-child(1) .bid-limit-progress')
+        );
+
+        // Update total bid limit
+        updateProgress(
+          this.userLimits.totalBid.used,
+          this.userLimits.totalBid.limit,
+          document.querySelector('.bid-limit-item:nth-child(2) .bid-limit-progress')
+        );
+
+        // Update active bids
+        updateProgress(
+          this.userLimits.activeBids.used,
+          this.userLimits.activeBids.limit,
+          document.querySelector('.bid-limit-item:nth-child(3) .bid-limit-progress')
+        );
+      }
+
+      // Add this method to the LotManager class
+      attachBidHandlers(element) {
+        const bidButton = element.querySelector('button[class*="bg-orange-500"]');
+        if (bidButton) {
+          // Remove any existing handlers
+          const newButton = bidButton.cloneNode(true);
+          bidButton.parentNode.replaceChild(newButton, bidButton);
+          
+          // Add new handler
+          newButton.addEventListener('click', () => {
+            const lotNumber = this.getLotNumber(element);
+            if (lotNumber) {
+              const currentBid = element.querySelector('span[class*="font-bold"]').textContent;
+              const bidIncrement = newButton.textContent.trim();
+              const currentBidValue = parseInt(currentBid.replace(/[^\d]/g, ''));
+              const bidIncrementValue = parseInt(bidIncrement.replace(/[^\d]/g, ''));
+              const newBidAmount = '$' + (currentBidValue + bidIncrementValue).toLocaleString();
+              
+              showBidConfirmCheck(bidIncrement, lotNumber, newBidAmount);
+            }
+          });
+        }
+      }
+
+      calculateMonthlyPayment(price, termMonths = 36, apr = 6.99) {
+        const monthlyRate = apr / 1200;
+        const monthlyPayment = price * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+        return Math.round(monthlyPayment);
+      }
+      
+      updateMonthlyPayments() {
+        this.lots.forEach((lot, lotNumber) => {
+          const priceElement = lot.element.querySelector('span[class*="font-bold"]');
+          if (priceElement) {
+            const price = parseInt(priceElement.textContent.replace(/[^0-9]/g, ''));
+            
+            // Only show financing for items over $15,000
+            const monthlyPaymentContainer = lot.element.querySelector('.monthly-payment');
+            if (monthlyPaymentContainer) {
+              if (price > 15000) {
+                const monthlyPayment = this.calculateMonthlyPayment(price);
+                monthlyPaymentContainer.innerHTML = `
+                  <span class="font-medium">$${monthlyPayment.toLocaleString()}</span>/mo
+                `;
+              } else {
+                monthlyPaymentContainer.style.display = 'none';
+              }
+            }
+          }
+        });
+      }
+
+      initializeWatchCounts() {
+        this.lots.forEach((lot, lotNumber) => {
+          // Generate random initial watch count between 5 and 100
+          const initialCount = Math.floor(Math.random() * 96) + 5;
+          this.watchCounts.set(lotNumber, initialCount);
+          this.updateWatchCountDisplay(lot.element, initialCount);
+        });
+      }
+
+      updateWatchCountDisplay(element, count) {
+        const watchCountElement = element.querySelector('.watch-count');
+        if (watchCountElement) {
+          watchCountElement.textContent = `${count} watching`;
+        }
+      }
+
+      startWatchCountUpdates() {
+        setInterval(() => {
+          this.lots.forEach((lot, lotNumber) => {
+            if (Math.random() < 0.3) { // 30% chance of update
+              const currentCount = this.watchCounts.get(lotNumber);
+              const change = Math.random() < 0.7 ? 1 : -1; // 70% chance of increase
+              const newCount = Math.max(5, currentCount + change); // Minimum 5 watchers
+              
+              this.watchCounts.set(lotNumber, newCount);
+              this.updateWatchCountDisplay(lot.element, newCount);
+
+              // Show notification for significant changes
+              if (change > 0 && Math.random() < 0.1) { // 10% chance
+                this.showNotification(
+                  'Growing Interest',
+                  `Lot #${lotNumber} is gaining attention with ${newCount} watchers`
+                );
+              }
+            }
+          });
+        }, 5000); // Update every 5 seconds
+      }
+
+      // Add this method to the LotManager class
+      updateLotPrice(lotNumber, bidAmount) {
+        const lot = this.lots.get(lotNumber);
+        if (!lot) return;
+
+        const priceElement = lot.element.querySelector('span[class*="font-bold"]');
+        const monthlyPaymentElement = lot.element.querySelector('.monthly-payment');
+        
+        if (priceElement) {
+          // Get current price
+          const currentPrice = parseInt(priceElement.textContent.replace(/[^0-9]/g, ''));
+          const newPrice = currentPrice + bidAmount;
+
+          // Create and insert price update indicator
+          const updateIndicator = document.createElement('div');
+          updateIndicator.className = 'text-sm text-emerald-600 font-medium absolute -top-6 right-4 opacity-0 transition-all duration-500';
+          updateIndicator.textContent = `+$${bidAmount.toLocaleString()}`;
+          lot.element.style.position = 'relative';
+          lot.element.appendChild(updateIndicator);
+
+          // Animate price change
+          requestAnimationFrame(() => {
+            // Animate price element
+            priceElement.classList.add('price-update');
+            
+            // Flash the entire lot card
+            lot.element.classList.add('price-flash');
+            
+            // Animate update indicator
+            updateIndicator.style.opacity = '1';
+            updateIndicator.style.transform = 'translateY(-10px)';
+
+            // Update price with animation
+            setTimeout(() => {
+              priceElement.textContent = `$${newPrice.toLocaleString()}`;
+            }, 300);
+
+            // Update monthly payment if applicable
+            if (monthlyPaymentElement && newPrice > 15000) {
+              monthlyPaymentElement.classList.add('updating');
+              setTimeout(() => {
+                const newMonthlyPayment = this.calculateMonthlyPayment(newPrice);
+                const paymentSpan = monthlyPaymentElement.querySelector('span');
+                if (paymentSpan) {
+                  paymentSpan.textContent = `$${newMonthlyPayment.toLocaleString()}`;
+                }
+              }, 300);
+            }
+
+            // Cleanup animations
+            setTimeout(() => {
+              priceElement.classList.remove('price-update');
+              lot.element.classList.remove('price-flash');
+              monthlyPaymentElement?.classList.remove('updating');
+              updateIndicator.style.opacity = '0';
+              updateIndicator.style.transform = 'translateY(-20px)';
+              setTimeout(() => updateIndicator.remove(), 500);
+            }, 600);
+          });
+        }
+      }
+    }
+
+    // Bid confirmation functions
+    function showBidConfirmCheck(bidIncrement, lotNumber, newBidAmount) {
+      const modal = document.getElementById('bidConfirmCheckModal');
+      document.getElementById('confirmBidAmount').textContent = newBidAmount;
+      document.getElementById('confirmLotNumber').textContent = lotNumber;
+      modal.classList.remove('hidden');
+    }
+
+    function confirmBid() {
+      const modal = document.getElementById('bidConfirmCheckModal');
+      const amount = document.getElementById('confirmBidAmount').textContent;
+      const lotNumber = document.getElementById('confirmLotNumber').textContent;
+      const bidAmount = parseInt(amount.replace(/[^0-9]/g, ''));
+      
+      modal.classList.add('hidden');
+      showBidConfirmation(amount, lotNumber);
+      
+      // Update price with animation
+      lotManager.updateLotPrice(lotNumber, bidAmount);
+      lotManager.extendTime(lotNumber);
+    }
+
+    function showBidConfirmation(amount, lotNumber) {
+      const modal = document.getElementById('bidConfirmationModal');
+      document.getElementById('bidAmount').textContent = amount;
+      document.getElementById('lotNumber').textContent = lotNumber;
+      modal.classList.remove('hidden');
+    }
+
+    function cancelBid() {
+      document.getElementById('bidConfirmCheckModal').classList.add('hidden');
+    }
+
+    function closeBidConfirmation() {
+      document.getElementById('bidConfirmationModal').classList.add('hidden');
+    }
+
+    function enterLiveAuction() {
+      document.getElementById('welcomeModal').classList.add('hidden');
+      localStorage.setItem('welcomeShown', 'true');
+    }
+
+    // Add toggle function for user section
+    function toggleUserSection() {
+      const expandedSection = document.querySelector('.user-section-expanded');
+      const chevron = document.querySelector('.user-section-chevron');
+      
+      expandedSection.classList.toggle('hidden');
+      chevron.classList.toggle('rotate');
+      
+      // Force a reflow before adding show class for animation
+      if (!expandedSection.classList.contains('hidden')) {
+        expandedSection.offsetHeight;
+        expandedSection.classList.add('show');
+      } else {
+        expandedSection.classList.remove('show');
+      }
+    }
+
+    // User Dropdown Functions
+    function toggleUserDropdown(event) {
+      event.stopPropagation(); // Prevent event from bubbling
+      const dropdown = document.querySelector('.user-dropdown');
+      const isVisible = dropdown.classList.contains('show');
+      
+      if (!isVisible) {
+        // Show dropdown
+        dropdown.classList.remove('hidden');
+        // Force reflow
+        dropdown.offsetHeight;
+        dropdown.classList.add('show');
+        
+        // Add backdrop for click outside
+        const backdrop = document.createElement('div');
+        backdrop.className = 'dropdown-backdrop';
+        backdrop.onclick = closeUserDropdown;
+        document.body.appendChild(backdrop);
+      } else {
+        closeUserDropdown();
+      }
+    }
+
+    function closeUserDropdown() {
+      const dropdown = document.querySelector('.user-dropdown');
+      if (!dropdown) return;
+      
+      dropdown.classList.remove('show');
+      
+      // Remove backdrop
+      const backdrop = document.querySelector('.dropdown-backdrop');
+      if (backdrop) backdrop.remove();
+      
+      // Hide dropdown after animation
+      setTimeout(() => {
+        dropdown.classList.add('hidden');
+      }, 200);
+    }
+
+    // Add event listeners when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      // Existing DOMContentLoaded code ...
+
+      // Add dropdown event listeners
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeUserDropdown();
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        const dropdown = document.querySelector('.user-dropdown');
+        const avatar = document.querySelector('.user-avatar');
+        
+        if (dropdown && !dropdown.contains(e.target) && !avatar.contains(e.target)) {
+          closeUserDropdown();
+        }
+      });
+    });
+
+    // Add these functions to your existing script
+    function showFinanceDetails(event, lotNumber, price) {
+      event.stopPropagation();
+      const modal = document.getElementById('financeModal');
+      const priceElement = document.getElementById('financePrice');
+      
+      // Update price in modal
+      priceElement.textContent = '$' + price.toLocaleString();
+      
+      modal.classList.remove('hidden');
+      
+      // Add backdrop for click outside
+      const backdrop = document.createElement('div');
+      backdrop.className = 'dropdown-backdrop';
+      backdrop.onclick = closeFinanceModal;
+      document.body.appendChild(backdrop);
+      
+      // Initialize buttons
+      document.querySelectorAll('.downpayment-btn').forEach(btn => {
+        btn.onclick = () => updatePayment(btn, 'downpayment-btn');
+      });
+      
+      document.querySelectorAll('.term-btn').forEach(btn => {
+        btn.onclick = () => updatePayment(btn, 'term-btn');
+      });
+      
+      // Calculate initial payment
+      updatePayment(document.querySelector('.downpayment-btn.active'), 'downpayment-btn');
+    }
+
+    function closeFinanceModal() {
+    }
+
+    function closeFinanceModal() {
+      const modal = document.getElementById('financeModal');
+      modal.classList.add('hidden');
+      
+      // Remove backdrop
+      const backdrop = document.querySelector('.dropdown-backdrop');
+      if (backdrop) backdrop.remove();
+    }
+
+    function updatePayment(clickedBtn, btnClass) {
+      // Update active state
+      document.querySelectorAll('.' + btnClass).forEach(btn => {
+        btn.classList.remove('active');
+      });
+      clickedBtn.classList.add('active');
+      
+      // Get current values
+      const price = parseInt(document.getElementById('financePrice').textContent.replace(/[^0-9]/g, ''));
+      const downPaymentPercent = parseInt(document.querySelector('.downpayment-btn.active').dataset.percent);
+      const termMonths = parseInt(document.querySelector('.term-btn.active').dataset.months);
+      const apr = 6.99;
+      
+      // Calculate payment
+      const downPayment = price * (downPaymentPercent / 100);
+      const principal = price - downPayment;
+      const monthlyRate = apr / 1200;
+      const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+      
+      // Update display
+      document.getElementById('monthlyPayment').textContent = '$' + Math.round(monthlyPayment).toLocaleString();
+    }
+  </script>
+
+ 
+</body>
+</html> 

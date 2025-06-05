@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Featured Sales Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4">
+    <!-- Featured Sales Module -->
+    <section class="py-8">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <h2 class="text-2xl font-bold text-gray-900">Featured Sales Events</h2>
+          <span class="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">120 Total Events</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/auctions-calendar" class="text-orange-600 hover:text-orange-700 font-medium flex items-center gap-2">
+            <span>View All Events</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="flex gap-2">
+            <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" id="prevFeatured">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" id="nextFeatured">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Event Card -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="relative h-64 md:h-full">
+            <img src="https://placehold.co/800x600?text=Heavy+Equipment+Auction" alt="Heavy Equipment Auction"
+              class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="flex flex-wrap gap-2 mb-2">
+                <span class="px-2 py-1 bg-orange-500 text-white text-xs font-medium rounded-full">Featured</span>
+                <span class="px-2 py-1 bg-white/90 text-gray-800 text-xs font-medium rounded-full">Construction</span>
+                <span class="px-2 py-1 bg-white/90 text-gray-800 text-xs font-medium rounded-full">Mining</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  <span class="relative flex h-2 w-2 mr-1">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                  </span>
+                  Live Now
+                </span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  250+ Lots
+                </span>
+              </div>
+              
+              <h3 class="text-2xl font-bold text-gray-900 mb-4">Heavy Equipment Mega Auction</h3>
+              
+              <div class="space-y-3 text-gray-600">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                  </svg>
+                  <div class="flex items-center gap-1">
+                    <span>Phoenix, Arizona</span>
+                    <span class="text-xs px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">+2 locations</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                  </svg>
+                  <div class="flex flex-col">
+                    <div class="flex items-center gap-1">
+                      <span>May 15 - May 17, 2024</span>
+                      <span class="text-xs px-1.5 py-0.5 bg-orange-50 text-orange-600 rounded">3 days</span>
+                    </div>
+                    <span class="text-xs text-gray-500">Viewing: May 14, 9AM - 5PM</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1z M16 16V6a1 1 0 00-1-1h-2a1 1 0 00-1 1v10a1 1 0 001 1h2a1 1 0 001-1z M19 16V6a1 1 0 00-1-1h-2a1 1 0 00-1 1v10a1 1 0 001 1h2a1 1 0 001-1z" stroke-width="2"/>
+                  </svg>
+                  <span>250 Lots Available</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+              <button class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                View Lots
+              </button>
+              <button class="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Auction Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Events Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Event Card 1 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Agricultural+Equipment" alt="Agricultural Equipment"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-emerald-500 text-white text-xs font-medium rounded-full">Coming Soon</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Agriculture</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">150+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Farm Equipment Auction</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <span>Dallas, TX</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <span>June 1, 2024</span>
+              </div>
+            </div>
+            <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors">
+              Get Notified
+            </button>
+          </div>
+        </div>
+
+        <!-- Event Card 2 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Industrial+Equipment" alt="Industrial Equipment"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-purple-500 text-white text-xs font-medium rounded-full">Registration Open</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Industrial</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">180+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Industrial Machinery Sale</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <span>Chicago, IL</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <span>June 15, 2024</span>
+              </div>
+            </div>
+            <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors">
+              Register Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Event Card 3 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Transportation+Fleet" alt="Transportation Fleet"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded-full">Preview Available</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Transportation</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">120+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Fleet Vehicle Auction</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <span>Atlanta, GA</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <span>June 30, 2024</span>
+              </div>
+            </div>
+            <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors">
+              Preview Lots
+            </button>
+          </div>
+        </div>
+
+        <!-- Additional Event Cards (4-20) -->
+        <!-- Card 4 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Mining+Equipment" alt="Mining Equipment"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-full">Bidding Open</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Mining</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">90+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Mining Equipment Auction</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <div class="flex items-center gap-1">
+                  <span>Denver, CO</span>
+                  <span class="text-xs px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">+3 locations</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1">
+                    <span>July 5 - July 8, 2024</span>
+                    <span class="text-xs px-1.5 py-0.5 bg-orange-50 text-orange-600 rounded">4 days</span>
+                  </div>
+                  <span class="text-xs text-gray-500">Viewing: July 4, 10AM - 4PM</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <button class="w-full bg-orange-600 text-white px-4 py-2 rounded font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                View Lots
+              </button>
+              <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Auction Details
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Construction+Equipment" alt="Construction Equipment"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-yellow-500 text-white text-xs font-medium rounded-full">Ending Soon</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Construction</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">75+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Construction Fleet Sale</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <span>Miami, FL</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1">
+                    <span>July 10, 2024</span>
+                    <span class="text-xs px-1.5 py-0.5 bg-green-50 text-green-600 rounded">1 day</span>
+                  </div>
+                  <span class="text-xs text-gray-500">Viewing: July 9, 1PM - 6PM</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <button class="w-full bg-orange-600 text-white px-4 py-2 rounded font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                View Lots
+              </button>
+              <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Auction Details
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div class="relative h-48">
+            <img src="https://placehold.co/400x300?text=Manufacturing+Equipment" alt="Manufacturing Equipment"
+              class="w-full h-full object-cover">
+            <div class="absolute top-3 left-3">
+              <span class="px-2 py-1 bg-purple-500 text-white text-xs font-medium rounded-full">New Listing</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Manufacturing</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">60+ Lots</span>
+            </div>
+            <h4 class="font-semibold text-lg mb-2">Factory Equipment Sale</h4>
+            <div class="space-y-2 text-sm text-gray-600 mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-width="2"/>
+                </svg>
+                <div class="flex items-center gap-1">
+                  <span>Detroit, MI</span>
+                  <span class="text-xs px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">+1 location</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/>
+                </svg>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1">
+                    <span>July 15 - July 16, 2024</span>
+                    <span class="text-xs px-1.5 py-0.5 bg-orange-50 text-orange-600 rounded">2 days</span>
+                  </div>
+                  <span class="text-xs text-gray-500">Viewing: July 14, 11AM - 4PM</span>
+                </div>
+              </div>
+            </div>
+            <button class="w-full bg-gray-100 text-gray-800 px-4 py-2 rounded font-medium hover:bg-gray-200 transition-colors">
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination and Calendar Link -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Showing 1-20 of 120 events</span>
+          <div class="flex gap-1">
+            <button class="px-2 py-1 text-sm bg-orange-50 text-orange-600 rounded hover:bg-orange-100">1</button>
+            <button class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">2</button>
+            <button class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">3</button>
+            <span class="px-2 py-1 text-sm text-gray-400">...</span>
+            <button class="px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded">6</button>
+          </div>
+        </div>
+        
+        <a href="/auctions-calendar" class="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-medium">View Full Calendar</span>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Pagination configuration
+    const ITEMS_PER_PAGE = 20;
+    const TOTAL_EVENTS = 120;
+    let currentPage = 1;
+
+    // Calculate total pages
+    const totalPages = Math.ceil(TOTAL_EVENTS / ITEMS_PER_PAGE);
+
+    function updatePagination() {
+      const startItem = ((currentPage - 1) * ITEMS_PER_PAGE) + 1;
+      const endItem = Math.min(currentPage * ITEMS_PER_PAGE, TOTAL_EVENTS);
+      
+      // Update the counter text
+      document.querySelector('.text-sm.text-gray-600').textContent = 
+        `Showing ${startItem}-${endItem} of ${TOTAL_EVENTS} events`;
+      
+      // Update pagination buttons
+      const paginationButtons = document.querySelectorAll('.flex.gap-1 button');
+      paginationButtons.forEach((button, index) => {
+        if (index === currentPage - 1) {
+          button.classList.add('bg-orange-50', 'text-orange-600');
+          button.classList.remove('text-gray-600');
+        } else {
+          button.classList.remove('bg-orange-50', 'text-orange-600');
+          button.classList.add('text-gray-600');
+        }
+      });
+    }
+
+    // Add click handlers for pagination
+    document.querySelectorAll('.flex.gap-1 button').forEach((button, index) => {
+      button.addEventListener('click', () => {
+        currentPage = index + 1;
+        updatePagination();
+        // Here you would typically fetch new data for the current page
+        // and update the event cards
+      });
+    });
+
+    // Simple carousel functionality for mobile
+    let currentSlide = 0;
+    const totalSlides = document.querySelectorAll('.event-card').length;
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+
+    function previousSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const cards = document.querySelectorAll('.event-card');
+      cards.forEach((card, index) => {
+        if (index === currentSlide) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Initialize carousel and pagination
+    document.addEventListener('DOMContentLoaded', () => {
+      updatePagination();
+      
+      // Show all cards initially on larger screens
+      if (window.innerWidth >= 768) {
+        const cards = document.querySelectorAll('.event-card');
+        cards.forEach(card => {
+          card.style.display = 'block';
+        });
+      } else {
+        updateCarousel();
+      }
+    });
+
+    // Update display on window resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        const cards = document.querySelectorAll('.event-card');
+        cards.forEach(card => {
+          card.style.display = 'block';
+        });
+      } else {
+        updateCarousel();
+      }
+    });
+
+    // Add click handlers for navigation buttons
+    document.getElementById('prevFeatured').addEventListener('click', previousSlide);
+    document.getElementById('nextFeatured').addEventListener('click', nextSlide);
+  </script>
+</body>
+</html> 
