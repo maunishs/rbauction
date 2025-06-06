@@ -6,6 +6,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // Currency dropdown functionality
+    let currentCurrencySymbol = '$';
+    
+    function toggleCurrencyDropdown(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('currencyDropdown');
+      dropdown.classList.toggle('hidden');
+      
+      // Close other dropdowns
+      const userDropdown = document.querySelector('.user-dropdown');
+      if (userDropdown) userDropdown.classList.add('hidden');
+      const wonItemsTable = document.getElementById('wonItemsOverlay');
+      if (wonItemsTable) wonItemsTable.classList.add('hidden');
+      
+      // Close when clicking outside
+      document.addEventListener('click', function closeDropdown(e) {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.add('hidden');
+          document.removeEventListener('click', closeDropdown);
+        }
+      });
+    }
+    
+    function changeCurrency(code, symbol) {
+      currentCurrencySymbol = symbol;
+      document.getElementById('selectedCurrency').textContent = code;
+      document.getElementById('currencyDropdown').classList.add('hidden');
+    }
+
+    // Won Items functionality
+    function toggleWonItems(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const wonItemsOverlay = document.getElementById('wonItemsOverlay');
+      wonItemsOverlay.classList.toggle('hidden');
+      
+      // Close other dropdowns
+      const currencyDropdown = document.getElementById('currencyDropdown');
+      if (currencyDropdown) currencyDropdown.classList.add('hidden');
+      const userDropdown = document.querySelector('.user-dropdown');
+      if (userDropdown) userDropdown.classList.add('hidden');
+      
+      // Close when clicking outside
+      document.addEventListener('click', function closeWonItems(e) {
+        if (!wonItemsOverlay.contains(e.target) && !e.target.closest('[data-won-items-trigger]')) {
+          wonItemsOverlay.classList.add('hidden');
+          document.removeEventListener('click', closeWonItems);
+        }
+      });
+    }
+  </script>
+  <style>
+    /* Won Items Overlay styles */
+    #wonItemsOverlay {
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
 
@@ -32,6 +92,62 @@
           <div class="online-bidders">
             <div class="online-pulse"></div>
             <span class="text-sm bidder-count">12,847 online bidders</span>
+          </div>
+          
+          <!-- Currency Dropdown -->
+          <div class="relative">
+            <button onclick="toggleCurrencyDropdown(event)" class="flex items-center gap-1 px-2 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">
+              <span id="selectedCurrency">USD</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            
+            <!-- Currency Dropdown Panel -->
+            <div id="currencyDropdown" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg hidden z-50">
+              <div class="py-1">
+                <button onclick="changeCurrency('USD', '$')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">$</span>
+                  <span>USD - US Dollar</span>
+                </button>
+                <button onclick="changeCurrency('EUR', '€')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">€</span>
+                  <span>EUR - Euro</span>
+                </button>
+                <button onclick="changeCurrency('GBP', '£')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">£</span>
+                  <span>GBP - British Pound</span>
+                </button>
+                <button onclick="changeCurrency('JPY', '¥')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">¥</span>
+                  <span>JPY - Japanese Yen</span>
+                </button>
+                <button onclick="changeCurrency('AUD', 'A$')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">A$</span>
+                  <span>AUD - Australian Dollar</span>
+                </button>
+                <button onclick="changeCurrency('CAD', 'C$')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">C$</span>
+                  <span>CAD - Canadian Dollar</span>
+                </button>
+                <button onclick="changeCurrency('CHF', 'Fr')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">Fr</span>
+                  <span>CHF - Swiss Franc</span>
+                </button>
+                <button onclick="changeCurrency('CNY', '¥')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">¥</span>
+                  <span>CNY - Chinese Yuan</span>
+                </button>
+                <button onclick="changeCurrency('NZD', 'NZ$')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">NZ$</span>
+                  <span>NZD - New Zealand Dollar</span>
+                </button>
+                <button onclick="changeCurrency('SGD', 'S$')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                  <span class="w-6">S$</span>
+                  <span>SGD - Singapore Dollar</span>
+                </button>
+              </div>
+            </div>
           </div>
           
           <!-- User Avatar Dropdown -->
@@ -291,7 +407,7 @@
             My Bids
             <span class="bg-blue-200 text-blue-800 text-xs px-1.5 rounded-full">5</span>
           </button>
-          <button class="px-3 py-1 bg-orange-100 text-orange-700 rounded flex items-center gap-1 whitespace-nowrap border border-orange-200">
+          <button onclick="toggleWonItems(event)" data-won-items-trigger class="px-3 py-1 bg-orange-100 text-orange-700 rounded flex items-center gap-1 whitespace-nowrap border border-orange-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M12 8l3 4h2l2 2H5l2-2h2l3-4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -645,6 +761,8 @@
         </div>
       </div>
     </div>
+
+
 
     <!-- Upcoming Agricultural Lots Schedule -->
     <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 mb-6 border border-amber-100">
@@ -1059,6 +1177,117 @@
           -webkit-backdrop-filter: blur(8px);
         }
       </style>
+    </div>
+
+    <!-- Won Items Overlay -->
+    <div id="wonItemsOverlay" class="fixed inset-x-0 top-24 z-50 hidden">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-8 border border-gray-200">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold">Won Items</h2>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500">Total Value:</span>
+                <span class="text-lg font-bold text-orange-600">$890K</span>
+              </div>
+              <button onclick="toggleWonItems(event)" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th class="p-3">Image</th>
+                  <th class="p-3">Lot #</th>
+                  <th class="p-3">Title</th>
+                  <th class="p-3">Max Bid</th>
+                  <th class="p-3">Won Bid</th>
+                  <th class="p-3">Bidders</th>
+                  <th class="p-3">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <!-- Item 1 -->
+                <tr class="text-sm">
+                  <td class="p-3">
+                    <img src="https://placehold.co/60x45?text=Lot" alt="2019 Cat D6T Dozer" class="w-15 h-11 object-cover rounded border">
+                  </td>
+                  <td class="p-3 font-medium">#123</td>
+                  <td class="p-3">
+                    <div class="font-medium">2019 Cat D6T Dozer</div>
+                    <div class="text-xs text-gray-500">Serial: CAT0123456</div>
+                  </td>
+                  <td class="p-3">$125,000</td>
+                  <td class="p-3 font-medium text-green-600">$120,000</td>
+                  <td class="p-3">12</td>
+                  <td class="p-3">
+                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Payment Pending</span>
+                  </td>
+                </tr>
+                
+                <!-- Item 2 -->
+                <tr class="text-sm">
+                  <td class="p-3">
+                    <img src="https://placehold.co/60x45?text=Lot" alt="2018 John Deere 544K Loader" class="w-15 h-11 object-cover rounded border">
+                  </td>
+                  <td class="p-3 font-medium">#145</td>
+                  <td class="p-3">
+                    <div class="font-medium">2018 John Deere 544K Loader</div>
+                    <div class="text-xs text-gray-500">Serial: JD544K789</div>
+                  </td>
+                  <td class="p-3">$95,000</td>
+                  <td class="p-3 font-medium text-green-600">$92,000</td>
+                  <td class="p-3">8</td>
+                  <td class="p-3">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Ready for Pickup</span>
+                  </td>
+                </tr>
+                
+                <!-- Item 3 -->
+                <tr class="text-sm">
+                  <td class="p-3">
+                    <img src="https://placehold.co/60x45?text=Lot" alt="2021 Bobcat T590 Skid Steer" class="w-15 h-11 object-cover rounded border">
+                  </td>
+                  <td class="p-3 font-medium">#167</td>
+                  <td class="p-3">
+                    <div class="font-medium">2021 Bobcat T590 Skid Steer</div>
+                    <div class="text-xs text-gray-500">Serial: BOB590T321</div>
+                  </td>
+                  <td class="p-3">$45,000</td>
+                  <td class="p-3 font-medium text-green-600">$43,500</td>
+                  <td class="p-3">15</td>
+                  <td class="p-3">
+                    <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs">Inspection Required</span>
+                  </td>
+                </tr>
+                
+                <!-- Item 4 -->
+                <tr class="text-sm">
+                  <td class="p-3">
+                    <img src="https://placehold.co/60x45?text=Lot" alt="2020 Volvo EC220E Excavator" class="w-15 h-11 object-cover rounded border">
+                  </td>
+                  <td class="p-3 font-medium">#189</td>
+                  <td class="p-3">
+                    <div class="font-medium">2020 Volvo EC220E Excavator</div>
+                    <div class="text-xs text-gray-500">Serial: VOL220E456</div>
+                  </td>
+                  <td class="p-3">$165,000</td>
+                  <td class="p-3 font-medium text-green-600">$162,000</td>
+                  <td class="p-3">10</td>
+                  <td class="p-3">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">Completed</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
